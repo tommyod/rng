@@ -15,6 +15,10 @@
 
 # %%
 import matplotlib.pyplot as plt
+import os
+
+# %%
+SAVE_DIR = os.path.join("..", "presentation", "figures")
 
 # %% [markdown]
 # # Mutual fund saving
@@ -56,6 +60,8 @@ for simulation in range(999):
     
     plt.plot(list(simulate(years, initial, yearly, interest)), color="black", alpha=0.01)
     
+plt.tight_layout()
+plt.savefig(os.path.join(SAVE_DIR, "mutual_fund.pdf"))
 plt.show()
 
 # %%
