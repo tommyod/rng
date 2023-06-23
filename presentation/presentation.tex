@@ -175,31 +175,7 @@
 	\end{easylist}
 \end{frame}
 
-\begin{frame}[fragile]{Agenda - more formally}
-		\begin{center}
-		% \includegraphics[width=0.7\linewidth]{figs/best_party}
-	\end{center}
-
-	\begin{easylist}[itemize]
-		# \textbf{Modeling}: Define what we mean by a good party
-		## \emph{Find a function $f:P \to \mathbb{R}$ to evaluate parties $p \in P$}
-		# \textbf{Computing}: Learn how to find the best party efficiently
-		## \emph{Find the argument $p^\star$ that maximizes $f$}
-		# \textbf{Inspection}: Evaluate party using Shapley values
-		## \emph{Find out of individual Pokémon influence $f(p^\star)$}
-	\end{easylist}
-\end{frame}
-
-\section{Modeling}
-
-\begin{frame}[fragile]{What makes a Pokémon good?}
-\begin{figure}
-	\centering
-	% \includegraphics[width=0.65\linewidth]{figs/bulbasaur}
-	\label{fig:bulbasaur}
-\end{figure}
-\end{frame}
-
+\section{Monte Carlo}
 
 \begin{frame}[fragile]{A simple idea: top stats}
 \begin{figure}
@@ -251,40 +227,6 @@ def incmatrix(genl1,genl2):
 % ==================================================================================
 \section{Computing}
 
-\begin{frame}[fragile]{Approaches}
-	
-	\begin{easylist}[itemize]
-		# \textbf{Heuristic}
-		## Sample many random combinations and evaluate
-		## Greedy algorithm (\emph{maximum coverage problem})
-		## Simulated annealing
-		## Tabu search
-		
-		# \textbf{Exact solution}
-		## Formulate as MIP
-		## Implement branch-and-bound algorithm
-	\end{easylist}
-\end{frame}
-
-\begin{frame}[fragile]{Pre-pruning}
-	\begin{figure}
-		\centering
-		% \includegraphics[width=0.7\linewidth]{figs/pareto_pokemon_by_type_0}
-		% \includegraphics[width=0.7\linewidth]{figs/pareto_pokemon_by_type_1}
-		% \includegraphics[width=0.7\linewidth]{figs/pareto_pokemon_by_type_2}
-	\end{figure}
-	
-	\begin{center}
-		Pruning pareto-dominated Pokémon. \\
-		Takes us from $151$ to $30$ Pokémon.\\
-		Reduces search space to $0.004 \%$ of its original size.
-	\end{center}
-	
-	\begin{align*}
-	\binom{151}{6} = 14\,888\,600\,755 \qquad \binom{30}{6} = 593\,775
-	\end{align*}
-\end{frame}
-
 
 \begin{frame}[fragile]{Greedy algorithm}
 	
@@ -303,31 +245,6 @@ def incmatrix(genl1,genl2):
 \end{easylist}
 \vspace*{1em}
 Complexity: $151 + 150 + \cdots + 146 = 891$ evaluations
-\end{frame}
-
-
-\begin{frame}[fragile]{Summary}
-\vspace*{1em}
-	\begin{easylist}[itemize]
-	# \textbf{Modeling}
-	## The best party maximizes type advantage against all other Pokémon
-	## Other modeling choices/refinements are possible
-
-	# \textbf{Computing}
-	## Pareto-dominated Pokémon can be removed
-	## Branch-and-bound works well
-
-	# \textbf{Inspection}
-	## Shapley value measures the contribution of each Pokémon to the party
-\end{easylist}
-%	\begin{easylist}[itemize]
-%		\ListProperties(Space=\listSpace, Space*=\listSpace)
-%		# The \textbf{Pareto set} is named after \emph{Vilfredo Pareto} (1848 -- 1923).
-%		# \textbf{Branch-and-bound} was proposed by \emph{Ailsa Land} and \emph{Alison Doig} in 1960.
-%		# The \textbf{Shapley value} was introduced by \emph{Lloyd Shapley} in 1951, and he won the Nobel Prize in Economics for it in 2012.
-%	\end{easylist}
-\vspace*{1em}
-\texttt{https://tommyodland.com/articles/2021/the-best-pokemon-party/}
 \end{frame}
 
 \end{document}
