@@ -149,4 +149,143 @@ for simulation in range(99):
 
 fig.savefig(os.path.join(SAVE_DIR, "mutual_fund_simulations.pdf"))
 
+# %% [markdown]
+# # Groceries
+
+# %%
+import pandas as pd
+
+# %%
+money_per_day = pd.Series(
+    [
+        0.0,
+        0.0,
+        471.9,
+        784.22,
+        0.0,
+        355.29,
+        0.0,
+        600.76,
+        399.7,
+        0.0,
+        266.7,
+        238.6,
+        433.0,
+        0.0,
+        1214.8,
+        470.5,
+        0.0,
+        0.0,
+        306.4,
+        341.8,
+        0.0,
+        0.0,
+        0.0,
+        358.89,
+        0.0,
+        715.2,
+        1049.02,
+        0.0,
+        0.0,
+        536.7,
+        367.7,
+    ],
+    index=pd.DatetimeIndex(
+        [
+            "2023-05-01",
+            "2023-05-02",
+            "2023-05-03",
+            "2023-05-04",
+            "2023-05-05",
+            "2023-05-06",
+            "2023-05-07",
+            "2023-05-08",
+            "2023-05-09",
+            "2023-05-10",
+            "2023-05-11",
+            "2023-05-12",
+            "2023-05-13",
+            "2023-05-14",
+            "2023-05-15",
+            "2023-05-16",
+            "2023-05-17",
+            "2023-05-18",
+            "2023-05-19",
+            "2023-05-20",
+            "2023-05-21",
+            "2023-05-22",
+            "2023-05-23",
+            "2023-05-24",
+            "2023-05-25",
+            "2023-05-26",
+            "2023-05-27",
+            "2023-05-28",
+            "2023-05-29",
+            "2023-05-30",
+            "2023-05-31",
+        ],
+        dtype="datetime64[ns]",
+        freq="D",
+    ),
+)
+
+# %%
+fig, ax = plt.subplots(1, 1, figsize=(3, 9 / 4))
+
+ax.plot(money_per_day, '-o', zorder=9)
+#ax.set_xticks(np.arange(len(money_per_day)))
+ax.grid(True, ls="--", alpha=0.5, zorder=0)
+ax.set_ylabel("NOK")
+
+fig.autofmt_xdate(rotation=90)
+fig.tight_layout()
+
+fig.savefig(os.path.join(SAVE_DIR, "groceries_data.pdf"))
+
+# %%
+money_per_day.sum()
+
+# %%
+money_per_day = money_per_day.values
+
+# %%
+money_per_day
+
+# %%
+import numpy as np
+
+resamples = np.random.choice(
+    money_per_day, size=(9999, len(money_per_day)), replace=True, p=None
+)
+
+
+np.mean(resamples.sum(axis=1))
+
+# %%
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(7.5, 2.25))
+
+
+ax1.set_title("Distribution of resampled means")
+ax1.hist(resamples.sum(axis=1), bins="auto", density=True)
+ax1.grid(True, ls="--", alpha=0.8, zorder=0, color="black")
+ax1.set_yticklabels([])
+
+ax2.set_title("Cumulative distribution of resampled means")
+ax2.hist(resamples.sum(axis=1), bins="auto", density=True, cumulative=True)
+ax2.grid(True, ls="--", alpha=0.8, zorder=0, color="black")
+
+fig.tight_layout()
+
+fig.savefig(os.path.join(SAVE_DIR, "groceries_data_resampled.pdf"))
+
+# %%
+
+# %%
+
+# %%
+
+# %%
+
+# %%
+
 # %%

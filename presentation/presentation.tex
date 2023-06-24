@@ -179,7 +179,7 @@
 \section{Introduction}
 
 
-\begin{frame}[fragile]{Sampling}
+\begin{frame}[fragile]{Probability Density Functions (PDFs)}
 \begin{columns}
 \begin{column}{0.5\textwidth}
     \begin{center}
@@ -210,7 +210,7 @@
 \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Sampling}
+\begin{frame}[fragile]{Sampling PDFs}
 \begin{columns}
 \begin{column}{0.5\textwidth}
     \begin{center}
@@ -241,7 +241,7 @@
 \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{Sampling}
+\begin{frame}[fragile]{Using samples to generate histograms}
 \begin{columns}
 \begin{column}{0.5\textwidth}
     \begin{center}
@@ -366,6 +366,56 @@ list(simulate_rng(years, yearly, interest))
 	& && x_{i} \in \{0, 1\}   \\
 & && 	\text{BEST EDGE}_j \in \mathbb{R}_+  
 	\end{align*}
+\end{frame}
+
+
+\section{Resampling}
+
+\begin{frame}[fragile]{Groceries}
+\begin{columns}
+\begin{column}{0.50\textwidth}
+    \begin{center}
+     \begin{minted}[fontsize=\footnotesize]{pycon} 
+>>> money_per_day
+array([0, 0, 471.9, 784.22,0,  ...])
+>>> money_per_day.sum()
+8911.18
+     \end{minted}
+     \end{center}	
+\end{column}
+\begin{column}{0.50\textwidth}  %%<--- here
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/groceries_data}
+     \end{figure}
+     \end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Groceries}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/groceries_data_resampled}
+ \end{figure}
+ \end{center}
+
+\begin{center}
+\begin{minted}[fontsize=\footnotesize]{python3} 
+import numpy as np
+import matplotlib.pyplot as plt
+
+resamples = np.random.choice(money_per_day, 
+            size=(9999, len(money_per_day)), 
+            replace=True)
+
+plt.hist(resamples.sum(axis=1), bins="auto", 
+         density=True, cumulative=True)
+\end{minted}
+\end{center}
+     
 \end{frame}
 
 
