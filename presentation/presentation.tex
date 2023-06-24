@@ -341,33 +341,6 @@ list(simulate_rng(years, yearly, interest))
 \end{columns}
 \end{frame}
 
-\begin{frame}[fragile]{A simple idea: top stats}
-\begin{figure}
-	\centering
-	% \includegraphics[width=0.7\linewidth]{figs/best_stats_party}
-	\begin{center}
-		\textbf{Disadvantage: ignores type information}
-	\end{center}
-\end{figure}
-\end{frame}
-
-\begin{frame}[fragile]{Optimization problem}
-	More formally, we want to solve:
-	\\
-	\begin{align*}
-	& \text{maximize}   && 
-	\left(
-	\operatorname{geom\_avg}_j \left( \text{BEST EDGE}_j \right) ,
-	\sum_i \operatorname{total\_stats}_i \, x_i
-	\right)
-	\\
-	& \text{subject to} && \text{BEST EDGE}_j= \max_i \left( \text{edge}(i, j) \, x_i \right) \quad \forall \, j \\
-	& && \sum_i x_i = 6    \\
-	& && x_{i} \in \{0, 1\}   \\
-& && 	\text{BEST EDGE}_j \in \mathbb{R}_+  
-	\end{align*}
-\end{frame}
-
 
 \section{Resampling}
 
