@@ -262,6 +262,20 @@ resamples = np.random.choice(
 np.mean(resamples.sum(axis=1))
 
 # %%
+fig, axes = plt.subplots(2, 3, figsize=(8, 3.5))
+
+for i, (ax, rs) in enumerate(zip(axes.ravel(), resamples[:6, :]), 1):
+    
+    ax.set_title(f"{round(rs.sum())} NOK")
+    ax.plot(rs, '-o', zorder=9)
+    ax.grid(True, ls="--", alpha=0.5, zorder=0)
+    ax.set_xticklabels([])
+    
+fig.tight_layout()
+
+fig.savefig(os.path.join(SAVE_DIR, "groceries_data_resamples.pdf"))
+
+# %%
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(7.5, 2.25))
 
 

@@ -371,6 +371,26 @@ array([0, 0, 471.9, 784.22,0,  ...])
 \begin{center}
  \begin{figure}
     	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/groceries_data_resamples}
+ \end{figure}
+ \end{center}
+
+\begin{center}
+\begin{minted}[fontsize=\footnotesize]{python3} 
+import numpy as np
+
+resamples = np.random.choice(money_per_day, 
+            size=(9999, len(money_per_day)), 
+            replace=True)
+\end{minted}
+\end{center}
+     
+\end{frame}
+
+\begin{frame}[fragile]{Groceries}
+\begin{center}
+ \begin{figure}
+    	\centering
     	\includegraphics[width=0.99\linewidth]{figures/groceries_data_resampled}
  \end{figure}
  \end{center}
