@@ -175,7 +175,171 @@
 	\end{easylist}
 \end{frame}
 
+% ==================================================================================
+\section{Introduction}
+
+
+\begin{frame}[fragile]{Sampling}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/uniform}
+     \end{figure}
+     \begin{minted}{pycon}
+>>> import random
+>>> random.random()
+0.9757805031464292
+     \end{minted}
+     \end{center}
+\end{column}
+\begin{column}{0.5\textwidth}  %%<--- here
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/normal}
+     \end{figure}
+      \begin{minted}{pycon}
+>>> import random
+>>> random.gauss(0, 1)
+-0.19223758016631237
+      \end{minted}
+     \end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Sampling}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/uniform_samples}
+     \end{figure}
+     \begin{minted}{pycon}
+>>> import random
+>>> random.random()
+0.9757805031464292
+     \end{minted}
+     \end{center}
+\end{column}
+\begin{column}{0.5\textwidth}  %%<--- here
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/normal_samples}
+     \end{figure}
+      \begin{minted}{pycon}
+>>> import random
+>>> random.gauss(0, 1)
+-0.19223758016631237
+      \end{minted}
+     \end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Sampling}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/uniform_samples_hist}
+     \end{figure}
+     \begin{minted}{pycon}
+>>> import random
+>>> random.random()
+0.9757805031464292
+     \end{minted}
+     \end{center}
+\end{column}
+\begin{column}{0.5\textwidth}  %%<--- here
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/normal_samples_hist}
+     \end{figure}
+      \begin{minted}{pycon}
+>>> import random
+>>> random.gauss(0, 1)
+-0.19223758016631237
+      \end{minted}
+     \end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
 \section{Monte Carlo}
+
+\begin{frame}[fragile]{Mutual fund}
+\begin{columns}
+\begin{column}{0.55\textwidth}
+    \begin{center}
+     \begin{minted}[fontsize=\footnotesize]{python3} 
+
+
+def simulate(years, yearly, interest):
+    saved = 0
+    yield saved
+    for year in range(years):
+        saved = saved * interest + yearly
+        yield saved
+        
+years = 18
+yearly = 12
+interest = 1.05
+
+list(simulate(years, yearly, interest))
+     \end{minted}
+     \end{center}
+\end{column}
+\begin{column}{0.45\textwidth}  %%<--- here
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/mutual_fund}
+     \end{figure}
+     \end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Mutual fund}
+\begin{columns}
+\begin{column}{0.55\textwidth}
+    \begin{center}
+     \begin{minted}[fontsize=\footnotesize]{python3} 
+import random
+
+def simulate_rng(years, yearly, interest):
+    saved = 0
+    yield saved
+    for year in range(years):
+        ir = random.gauss(*interest)
+        saved = saved * ir + yearly
+        yield saved
+        
+years = 18
+yearly = 12
+interest = (1.05, 0.1)
+
+list(simulate_rng(years, yearly, interest))
+     \end{minted}
+     \end{center}
+\end{column}
+\begin{column}{0.45\textwidth}  %%<--- here
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/mutual_fund_simulations}
+     \end{figure}
+     \end{center}
+\end{column}
+\end{columns}
+\end{frame}
 
 \begin{frame}[fragile]{A simple idea: top stats}
 \begin{figure}
@@ -207,7 +371,7 @@
 
 \begin{frame}[fragile]{Approaches}
 	
-\begin{minted}{python}
+\begin{minted}{python3}
 import numpy as np
     
 def incmatrix(genl1,genl2):
