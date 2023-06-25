@@ -356,6 +356,9 @@ list(simulate(years, yearly, interest))
 \end{frame}
 
 \begin{frame}[fragile]{Mutual fund}
+% comment: here we can ask interesting questions:
+% - what is the probability of hitting 100 before x years?
+% - after 5 years, what is the probability of hitting >= y?
 \begin{columns}
 \begin{column}{0.55\textwidth}
     \begin{center}
@@ -393,6 +396,28 @@ list(simulate_rng(years, yearly, interest))
 % ==================================================================
 % ==================================================================
 \section{Resampling}
+
+\begin{frame}[fragile]{Resampling in code}
+\begin{center}
+\begin{minted}[fontsize=\footnotesize]{pycon} 
+>>> import numpy as np
+>>> elements = [1, 2, 3, 4, 5]
+
+>>> np.random.choice(elements, replace=False, size=5) # Permutation
+array([2, 4, 1, 5, 3])
+
+>>> np.random.choice(elements, replace=True, size=5) # Resampling
+array([4, 1, 1, 1, 1])
+
+>>> p = [0.1, 0.1, 0.2, 0.3, 0.3] # With probabilities (weights)
+>>> np.random.choice(elements, replace=False, size=3, p=p)
+array([4, 5, 3])
+
+>>> np.random.choice(elements, replace=True, size=3, p=p)
+array([5, 5, 2])
+\end{minted}
+\end{center}
+\end{frame}
 
 \begin{frame}[fragile]{Groceries}
 \begin{columns}
@@ -541,7 +566,37 @@ Place 25 windmills on the acreage, so as to minimize \\
 
 
 
+% ==================================================================
+% ==================================================================
+% ==================================================================
+\section{Inverse probability (Bayesian statistics)}
 
+\begin{frame}[fragile]{Inverse problems}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+    \begin{center}
+\textbf{Deterministic}\\
+\vspace*{2em}
+\textbf{Forward (simulation)} \\
+Given input x,\\determine the output f(x) \\
+\vspace*{1em}
+\textbf{Backward (optimization)} \\
+Given output y = f(x),\\find the input x
+     \end{center}
+\end{column}
+\begin{column}{0.5\textwidth}  %%<--- here
+    \begin{center}
+\textbf{Stochastic}\\
+\vspace*{2em}
+\textbf{Foward (Monte Carlo)} \\
+Given a distribution over x,\\find the distribution f(x) \\
+\vspace*{1em}
+\textbf{Backward (Bayes)} \\
+Given a distribution y = f(x),\\find the distribution of input x
+     \end{center}
+\end{column}
+\end{columns}
+\end{frame}
 
 
 
