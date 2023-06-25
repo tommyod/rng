@@ -26,6 +26,8 @@ import numpy as np
 import scipy as sp
 from scipy import stats
 
+COLORS = plt.rcParams['axes.prop_cycle'].by_key()['color']
+
 # %matplotlib inline
 
 # %%
@@ -94,6 +96,79 @@ fig.savefig(os.path.join(SAVE_DIR, "normal_samples.pdf"))
 ax.hist(samples, bins="auto", density=True, zorder=0)
 
 fig.savefig(os.path.join(SAVE_DIR, "normal_samples_hist.pdf"))
+
+# %% [markdown]
+# # Canonball
+
+# %%
+# https://en.wikipedia.org/wiki/Projectile_motion
+angle = np.deg2rad(45)
+velocity = 10
+g = 9.81
+
+time_in_flight = 2 * velocity * np.sin(angle) / g
+
+time = np.linspace(0, time_in_flight, num=2**5)
+
+def x(t):
+    return velocity * np.cos(angle) * t
+
+def y(t):
+    return velocity * np.sin(angle) * t - g * t**2 / 2
+
+fig, ax = plt.subplots(1, 1, figsize=(5, 2))
+
+ax.set_xlim([-0.15, 11.25])
+ax.set_ylim([-0.15, 4])
+
+ax.plot([x(t_i) for t_i in time], [y(t_i) for t_i in time])
+ax.arrow(0, 0, np.cos(angle) * velocity/5, np.sin(angle) * velocity / 5,
+        head_width=0.3, head_length=0.3, overhang=0.8, zorder=99)
+
+fig.tight_layout()
+fig.savefig(os.path.join(SAVE_DIR, "cannonball.pdf"))
+
+
+# %%
+def final_x(angle, velocity):
+    time_in_flight = 2 * velocity * np.sin(angle) / g
+    return x(time_in_flight)
+
+fig, ax = plt.subplots(1, 1, figsize=(5, 2))
+
+ax.set_xlim([-0.15, 11.25])
+ax.set_ylim([-0.15, 4])
+
+RELATIVE_ERROR_ANGLE = 0.15
+
+for iteration in range(99):
+    angle = np.deg2rad(random.gauss(45, RELATIVE_ERROR_ANGLE * 45))
+    velocity = random.gauss(10, 0.01 * 10)
+    
+    ax.arrow(0, 0, np.cos(angle) * velocity/5, np.sin(angle) * velocity / 5,
+        head_width=0.3, head_length=0.3, overhang=0.8, zorder=99, alpha=0.1)
+    
+    time_in_flight = 2 * velocity * np.sin(angle) / g
+    time = np.linspace(0, time_in_flight, num=2**5)
+    ax.plot([x(t_i) for t_i in time], [y(t_i) for t_i in time], color=COLORS[0], alpha=0.1)
+    
+    
+# Plot histogram of final values
+final_x_values = []
+
+for iteration in range(99999):
+    angle = np.deg2rad(random.gauss(45, RELATIVE_ERROR_ANGLE * 45))
+    velocity = random.gauss(10, 0.01 * 10)
+    final_x_values.append(final_x(angle, velocity))
+    
+
+(counts, bins) = np.histogram(final_x_values, bins="auto")
+
+factor = 0.0015
+ax.hist(bins[:-1], bins=bins, weights=factor*counts, color=COLORS[1], zorder=99, alpha=0.8)
+
+fig.tight_layout()
+fig.savefig(os.path.join(SAVE_DIR, "cannonball_sim1.pdf"))
 
 
 # %% [markdown]
@@ -281,12 +356,12 @@ fig.savefig(os.path.join(SAVE_DIR, "groceries_data_resamples.pdf"))
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(7.5, 2.25))
 
 
-ax1.set_title("Distribution of resampled means")
+ax1.set_title("Distribution of resampled sums")
 ax1.hist(resamples.sum(axis=1), bins="auto", density=True)
 ax1.grid(True, ls="--", alpha=0.8, zorder=0, color="black")
 ax1.set_yticklabels([])
 
-ax2.set_title("Cumulative distribution of resampled means")
+ax2.set_title("Cumulative distribution of resampled sums")
 ax2.hist(resamples.sum(axis=1), bins="auto", density=True, cumulative=True)
 ax2.grid(True, ls="--", alpha=0.8, zorder=0, color="black")
 

@@ -279,6 +279,48 @@
 % ==================================================================
 \section{Monte Carlo}
 
+\begin{frame}[fragile]{Cannonball}
+\vspace*{-1em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/cannonball}
+ \end{figure}
+ \end{center}
+ \vspace*{-2em}
+
+\begin{center}
+\begin{minted}[fontsize=\footnotesize]{python3} 
+angle = np.deg2rad(45)
+velocity = 10
+g = 9.81
+time_in_flight = 2 * velocity * np.sin(angle) / g
+x = lambda t: velocity * np.cos(angle) * t
+y = lambda t: velocity * np.sin(angle) * t - g * t**2 / 2
+\end{minted}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Cannonball}
+\vspace*{-1em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/cannonball_sim1}
+ \end{figure}
+ \end{center}
+ \vspace*{-2em}
+
+\begin{center}
+\begin{minted}[fontsize=\footnotesize]{python3} 
+angle = np.deg2rad(random.gauss(45, 0.15 * 45)) # 15 % relative error
+velocity = random.gauss(10, 0.01 * 10)          # 1 % relative error
+
+final_x = 2 * velocity**2 * np.cos(angle) * np.sin(angle) / g
+\end{minted}
+\end{center}
+\end{frame}
+
 \begin{frame}[fragile]{Mutual fund}
 \begin{columns}
 \begin{column}{0.55\textwidth}
