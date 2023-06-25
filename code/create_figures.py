@@ -141,6 +141,9 @@ ax.set_ylim([-0.15, 4])
 
 RELATIVE_ERROR_ANGLE = 0.15
 
+np.random.seed(1)
+random.seed(1)
+
 for iteration in range(99):
     angle = np.deg2rad(random.gauss(45, RELATIVE_ERROR_ANGLE * 45))
     velocity = random.gauss(10, 0.01 * 10)
@@ -162,9 +165,9 @@ for iteration in range(99999):
     final_x_values.append(final_x(angle, velocity))
     
 
-(counts, bins) = np.histogram(final_x_values, bins="auto")
+(counts, bins) = np.histogram(final_x_values, bins=100)
 
-factor = 0.0015
+factor = 0.00048
 ax.hist(bins[:-1], bins=bins, weights=factor*counts, color=COLORS[1], zorder=99, alpha=0.8)
 
 fig.tight_layout()
