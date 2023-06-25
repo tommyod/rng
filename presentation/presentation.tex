@@ -144,7 +144,7 @@
 			\vfill
 	{\huge Wanna see my collection of random numbers?}
 	\vfill
-	{\large Clever subtitle here}
+	{\large A crash course in computational statistics}
 	\vfill
 	%\includegraphics[width=0.7\linewidth]{figs/best_party}
 	
@@ -316,6 +316,7 @@ y = lambda t: velocity * np.sin(angle) * t - g * t**2 / 2
 angle = np.deg2rad(random.gauss(45, 0.15 * 45)) # 15 % relative error
 velocity = random.gauss(10, 0.01 * 10)          # 1 % relative error
 
+# This is a nasty, non-linear function of velocity and angle
 final_x = 2 * velocity**2 * np.cos(angle) * np.sin(angle) / g
 \end{minted}
 \end{center}
@@ -535,6 +536,21 @@ Place 25 windmills on the acreage, so as to minimize \\
         points = suggestion
 \end{minted}
 \end{center}
+\end{frame}
+
+
+
+
+
+
+
+
+\begin{frame}[fragile]{References and further reading}
+\begin{easylist}[itemize]
+# Book 1
+# Book 2
+# Book 3
+\end{easylist}
 \end{frame}
 
 \end{document}

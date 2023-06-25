@@ -167,7 +167,7 @@ for iteration in range(99999):
 
 (counts, bins) = np.histogram(final_x_values, bins=100)
 
-factor = 0.00048
+factor = 0.00048 # Factor to scale the histogram for a nice figure
 ax.hist(bins[:-1], bins=bins, weights=factor*counts, color=COLORS[1], zorder=99, alpha=0.8)
 
 fig.tight_layout()
