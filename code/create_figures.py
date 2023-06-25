@@ -254,6 +254,8 @@ money_per_day
 # %%
 import numpy as np
 
+np.random.seed(1)
+
 resamples = np.random.choice(
     money_per_day, size=(9999, len(money_per_day)), replace=True, p=None
 )
@@ -292,14 +294,187 @@ fig.tight_layout()
 
 fig.savefig(os.path.join(SAVE_DIR, "groceries_data_resampled.pdf"))
 
-# %%
+# %% [markdown]
+# # Wind farms
 
 # %%
+from shapely.geometry import Point
+from shapely.geometry.polygon import Polygon
+from scipy.spatial.distance import cdist
+
+border_coords = [(0, 0), (0.05, 0.8), (0.2, 0.9), (0.2, 0.6), (0.4, 0.6),
+                 (0.4, 0.9),(0.6, 1.0), (0.9, 1.0), (1.0, 0.2), (1, 0)]
+border_coords = [(x, y) for (x, y) in border_coords]
+borders = Polygon(border_coords)
+
 
 # %%
+def objective(points):
+    
+    distances = cdist(np.array(points), np.array(points))
+    
+    # For each point, get closest neighbor, then average squared length to closest neighbor
+    min_distances = np.min(distances + np.eye(len(points))*9, axis=0)
+    distance_score = np.mean(np.exp(-min_distances))
+
+    # Add linear penalty for being outside
+    borders = Polygon(border_coords)
+    distances_outside = sum(
+        borders.distance(Point(point)) * (1 - borders.contains(Point(point)))
+        for point in list(points)
+    )
+
+    return distance_score + 100 * distances_outside
+
+
+np.random.seed(3)
+points = np.random.uniform(size=(25, 2))
+objective(points)
+
 
 # %%
+def draw_solution(ax, points=None):
+    coord = border_coords
+    coord.append(coord[0])
+
+    xs, ys = zip(*coord)
+
+    ax.plot(xs, ys)
+    if points is not None:
+        ax.scatter(*points.T, color="black", s=50, alpha=0.66)
+
+
+fig, ax1 = plt.subplots(1, 1, figsize=(5, 2.5))
+ax1.set_aspect("equal")
+ax2.set_aspect("equal")
+draw_solution(ax1, None)
+ax1.set_xticks([])
+ax1.set_yticks([])
+
+fig.tight_layout()
+fig.savefig(os.path.join(SAVE_DIR, "windfarm.pdf"))
+
 
 # %%
+def draw_solution(ax, points):
+    """Plot solution on axis."""
+
+    coord = border_coords
+    coord.append(coord[0])
+
+    xs, ys = zip(*coord) 
+    
+    ax.plot(xs, ys)
+    ax.scatter(*points.T, color="black", s=50, alpha=0.66)
+    
+    
+np.random.seed(3)
+points = np.random.uniform(size=(25, 2))
+    
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(5, 2.5))
+ax1.set_aspect("equal")
+ax2.set_aspect("equal")
+
+ax1.set_title(f"Objective: {objective(points):.4f}")
+draw_solution(ax1, points)
+ax1.set_xticks([])
+ax1.set_yticks([])
+
+np.random.seed(4)
+points = np.random.uniform(size=(25, 2))
+
+ax2.set_title(f"Objective: {objective(points):.4f}")
+draw_solution(ax2, points)
+ax2.set_xticks([])
+ax2.set_yticks([])
+
+fig.tight_layout()
+fig.savefig(os.path.join(SAVE_DIR, "windfarm_random_solution.pdf"))
+
 
 # %%
+def permute_solution(points, iteration=None):
+    scale = 0.05
+    
+    points = points.copy()
+    idx = np.random.choice(np.arange(points.shape[0]))
+    points[idx, :] += np.random.normal(loc=0, scale=scale, size=(2))
+    return points
+
+def climb(points):
+    """Stochastic hill climbing."""
+
+    ITERATIONS = 10**4
+
+    for iteration in range(ITERATIONS):
+        suggestion = permute_solution(points)
+        if objective(suggestion) < objective(points):
+            points = suggestion
+            
+    return points
+        
+np.random.seed(3)
+points = np.random.uniform(size=(25, 2))
+points = climb(points)
+    
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(5, 2.5))
+ax1.set_aspect("equal")
+ax2.set_aspect("equal")
+
+ax1.set_title(f"Objective: {objective(points):.4f}")
+draw_solution(ax1, points)
+ax1.set_xticks([])
+ax1.set_yticks([])
+
+np.random.seed(4)
+points = np.random.uniform(size=(25, 2))
+points = climb(points)
+
+ax2.set_title(f"Objective: {objective(points):.4f}")
+draw_solution(ax2, points)
+ax2.set_xticks([])
+ax2.set_yticks([])
+
+fig.tight_layout()
+fig.savefig(os.path.join(SAVE_DIR, "windfarm_hc.pdf"))
+
+
+# %%
+def anneal(points):
+    """Simulated annealing."""
+    
+    ITERATIONS = 10**4
+
+    for iteration in range(ITERATIONS):
+        suggestion = permute_solution(points)
+
+        accept_worse = np.random.rand() < np.exp(-0.001 * iteration)
+        if objective(suggestion) < objective(points) or accept_worse:
+            points = suggestion
+            
+    return points
+  
+np.random.seed(3)
+points = np.random.uniform(size=(25, 2))
+points = anneal(points)
+    
+fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(5, 2.5))
+ax1.set_aspect("equal")
+ax2.set_aspect("equal")
+
+ax1.set_title(f"Objective: {objective(points):.4f}")
+draw_solution(ax1, points)
+ax1.set_xticks([])
+ax1.set_yticks([])
+
+np.random.seed(4)
+points = np.random.uniform(size=(25, 2))
+points = anneal(points)
+
+ax2.set_title(f"Objective: {objective(points):.4f}")
+draw_solution(ax2, points)
+ax2.set_xticks([])
+ax2.set_yticks([])
+
+fig.tight_layout()
+fig.savefig(os.path.join(SAVE_DIR, "windfarm_sa.pdf"))

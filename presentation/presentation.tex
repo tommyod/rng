@@ -175,7 +175,9 @@
 	\end{easylist}
 \end{frame}
 
-% ==================================================================================
+% ==================================================================
+% ==================================================================
+% ==================================================================
 \section{Introduction}
 
 
@@ -272,6 +274,9 @@
 \end{columns}
 \end{frame}
 
+% ==================================================================
+% ==================================================================
+% ==================================================================
 \section{Monte Carlo}
 
 \begin{frame}[fragile]{Mutual fund}
@@ -341,7 +346,9 @@ list(simulate_rng(years, yearly, interest))
 \end{columns}
 \end{frame}
 
-
+% ==================================================================
+% ==================================================================
+% ==================================================================
 \section{Resampling}
 
 \begin{frame}[fragile]{Groceries}
@@ -412,46 +419,80 @@ plt.hist(resamples.sum(axis=1), bins="auto",
 \end{frame}
 
 
-\begin{frame}[fragile]{Approaches}
-	
-\begin{minted}{python3}
-import numpy as np
-    
-def incmatrix(genl1,genl2):
-    m = len(genl1)
-    n = len(genl2)
-    M = None #to become the incidence matrix
-    VT = np.zeros((n*m,1), int)  #dummy variable
+% ==================================================================
+% ==================================================================
+% ==================================================================
+\section{Stochastic search}
 
-    for i in range(m-1):
-        for j in range(i+1, m):
-            [r,c] = np.where(M2 == M1[i,j])
-    return M
-\end{minted}
+\begin{frame}[fragile]{Wind farm layout optimization}
+\vspace*{-1em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/windfarm}
+ \end{figure}
+ \end{center}
+\vspace*{-2em}
+\begin{center}
+Place 25 windmills on the acreage, so as to minimize \\
+(1) distance to closest neighboring windmill \\
+(2) distance to acreage area border (if outside)
+\end{center}
 \end{frame}
 
+\begin{frame}[fragile]{Wind farm layout optimization}
+\vspace*{-1em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/windfarm_random_solution}
+ \end{figure}
+ \end{center}
+\vspace*{-2em}
+\begin{center}
+\begin{minted}[fontsize=\small]{pycon}
+>>> points = np.random.uniform(size=(25, 2))
+>>> objective(points)
+17.6388238637308
+\end{minted}
+\end{center}
+\end{frame}
 
-% ==================================================================================
-\section{Computing}
+\begin{frame}[fragile]{Wind farm layout optimization}
+\vspace*{-1em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/windfarm_hc}
+ \end{figure}
+ \end{center}
+\vspace*{-2em}
+\begin{center}
+\begin{minted}[fontsize=\footnotesize]{pycon}
+>>> idx = np.random.choice(np.arange(points.shape[0]))
+>>> points[idx, :] += np.random.normal(loc=0, scale=0.05, size=(2))
+\end{minted}
+\end{center}
+\end{frame}
 
+\begin{frame}[fragile]{Wind farm layout optimization}
+\vspace*{-1em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/windfarm_sa}
+ \end{figure}
+ \end{center}
+\vspace*{-2em}
+\begin{center}
+\begin{minted}[fontsize=\footnotesize]{python3}
+    suggestion = permute_solution(points)
 
-\begin{frame}[fragile]{Greedy algorithm}
-	
-\begin{figure}
-	\centering
-	% \includegraphics[width=0.7\linewidth]{figs/greedy_party}
-\end{figure}
-	
-\begin{easylist}[itemize]
-	# Start with an empty party $P := \{\}$
-	# while $|P| < 6$ do:
-	## go through every non-chosen candiate $c$
-	### evaluate the resulting party $P \cup c$
-	## select the best non-chosen candidate pokemon $c^\star$
-	## add this Pokémon to the party: $P := P \cup c$
-\end{easylist}
-\vspace*{1em}
-Complexity: $151 + 150 + \cdots + 146 = 891$ evaluations
+    accept_worse = np.random.rand() < np.exp(-0.01 * iteration)
+    if objective(suggestion) < objective(points) or accept_worse:
+        points = suggestion
+\end{minted}
+\end{center}
 \end{frame}
 
 \end{document}
