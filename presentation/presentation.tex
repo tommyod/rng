@@ -144,7 +144,7 @@
 			\vfill
 	{\huge Wanna see my collection of random numbers?}
 	\vfill
-	{\large Clever subtitle here}
+	{\large A crash course in computational statistics}
 	\vfill
 	%\includegraphics[width=0.7\linewidth]{figs/best_party}
 	
@@ -175,76 +175,437 @@
 	\end{easylist}
 \end{frame}
 
+% ==================================================================
+% ==================================================================
+% ==================================================================
+\section{Introduction}
+
+
+\begin{frame}[fragile]{Probability Density Functions (PDFs)}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/uniform}
+     \end{figure}
+     \begin{minted}{pycon}
+>>> import random
+>>> random.random()
+0.9757805031464292
+     \end{minted}
+     \end{center}
+\end{column}
+\begin{column}{0.5\textwidth}  %%<--- here
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/normal}
+     \end{figure}
+      \begin{minted}{pycon}
+>>> import random
+>>> random.gauss(0, 1)
+-0.19223758016631237
+      \end{minted}
+     \end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Sampling PDFs}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/uniform_samples}
+     \end{figure}
+     \begin{minted}{pycon}
+>>> import random
+>>> random.random()
+0.9757805031464292
+     \end{minted}
+     \end{center}
+\end{column}
+\begin{column}{0.5\textwidth}  %%<--- here
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/normal_samples}
+     \end{figure}
+      \begin{minted}{pycon}
+>>> import random
+>>> random.gauss(0, 1)
+-0.19223758016631237
+      \end{minted}
+     \end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Using samples to generate histograms}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/uniform_samples_hist}
+     \end{figure}
+     \begin{minted}{pycon}
+>>> import random
+>>> random.random()
+0.9757805031464292
+     \end{minted}
+     \end{center}
+\end{column}
+\begin{column}{0.5\textwidth}  %%<--- here
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/normal_samples_hist}
+     \end{figure}
+      \begin{minted}{pycon}
+>>> import random
+>>> random.gauss(0, 1)
+-0.19223758016631237
+      \end{minted}
+     \end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+% ==================================================================
+% ==================================================================
+% ==================================================================
 \section{Monte Carlo}
 
-\begin{frame}[fragile]{A simple idea: top stats}
-\begin{figure}
-	\centering
-	% \includegraphics[width=0.7\linewidth]{figs/best_stats_party}
-	\begin{center}
-		\textbf{Disadvantage: ignores type information}
-	\end{center}
-\end{figure}
-\end{frame}
+\begin{frame}[fragile]{Cannonball}
+\vspace*{-1em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/cannonball}
+ \end{figure}
+ \end{center}
+ \vspace*{-2em}
 
-\begin{frame}[fragile]{Optimization problem}
-	More formally, we want to solve:
-	\\
-	\begin{align*}
-	& \text{maximize}   && 
-	\left(
-	\operatorname{geom\_avg}_j \left( \text{BEST EDGE}_j \right) ,
-	\sum_i \operatorname{total\_stats}_i \, x_i
-	\right)
-	\\
-	& \text{subject to} && \text{BEST EDGE}_j= \max_i \left( \text{edge}(i, j) \, x_i \right) \quad \forall \, j \\
-	& && \sum_i x_i = 6    \\
-	& && x_{i} \in \{0, 1\}   \\
-& && 	\text{BEST EDGE}_j \in \mathbb{R}_+  
-	\end{align*}
-\end{frame}
-
-
-\begin{frame}[fragile]{Approaches}
-	
-\begin{minted}{python}
-import numpy as np
-    
-def incmatrix(genl1,genl2):
-    m = len(genl1)
-    n = len(genl2)
-    M = None #to become the incidence matrix
-    VT = np.zeros((n*m,1), int)  #dummy variable
-
-    for i in range(m-1):
-        for j in range(i+1, m):
-            [r,c] = np.where(M2 == M1[i,j])
-    return M
+\begin{center}
+\begin{minted}[fontsize=\footnotesize]{python3} 
+angle = np.deg2rad(45)
+velocity = 10
+g = 9.81
+time_in_flight = 2 * velocity * np.sin(angle) / g
+x = lambda t: velocity * np.cos(angle) * t
+y = lambda t: velocity * np.sin(angle) * t - g * t**2 / 2
 \end{minted}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Cannonball}
+\vspace*{-1em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/cannonball_sim1}
+ \end{figure}
+ \end{center}
+ \vspace*{-2em}
+
+\begin{center}
+\begin{minted}[fontsize=\footnotesize]{python3} 
+angle = np.deg2rad(random.gauss(45, 0.15 * 45)) # 15 % relative error
+velocity = random.gauss(10, 0.01 * 10)          # 1 % relative error
+
+# This is a nasty, non-linear function of velocity and angle
+final_x = 2 * velocity**2 * np.cos(angle) * np.sin(angle) / g
+\end{minted}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Mutual fund}
+\begin{columns}
+\begin{column}{0.55\textwidth}
+    \begin{center}
+     \begin{minted}[fontsize=\footnotesize]{python3} 
+
+
+def simulate(years, yearly, interest):
+    saved = 0
+    yield saved
+    for year in range(years):
+        saved = saved * interest + yearly
+        yield saved
+        
+years = 18
+yearly = 12
+interest = 1.05
+
+list(simulate(years, yearly, interest))
+     \end{minted}
+     \end{center}
+\end{column}
+\begin{column}{0.45\textwidth}  %%<--- here
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/mutual_fund}
+     \end{figure}
+     \end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Mutual fund}
+% comment: here we can ask interesting questions:
+% - what is the probability of hitting 100 before x years?
+% - after 5 years, what is the probability of hitting >= y?
+\begin{columns}
+\begin{column}{0.55\textwidth}
+    \begin{center}
+     \begin{minted}[fontsize=\footnotesize]{python3} 
+import random
+
+def simulate_rng(years, yearly, interest):
+    saved = 0
+    yield saved
+    for year in range(years):
+        ir = random.gauss(*interest)
+        saved = saved * ir + yearly
+        yield saved
+        
+years = 18
+yearly = 12
+interest = (1.05, 0.1)
+
+list(simulate_rng(years, yearly, interest))
+     \end{minted}
+     \end{center}
+\end{column}
+\begin{column}{0.45\textwidth}  %%<--- here
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/mutual_fund_simulations}
+     \end{figure}
+     \end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+% ==================================================================
+% ==================================================================
+% ==================================================================
+\section{Resampling}
+
+\begin{frame}[fragile]{Resampling in code}
+\begin{center}
+\begin{minted}[fontsize=\footnotesize]{pycon} 
+>>> import numpy as np
+>>> elements = [1, 2, 3, 4, 5]
+
+>>> np.random.choice(elements, replace=False, size=5) # Permutation
+array([2, 4, 1, 5, 3])
+
+>>> np.random.choice(elements, replace=True, size=5) # Resampling
+array([4, 1, 1, 1, 1])
+
+>>> p = [0.1, 0.1, 0.2, 0.3, 0.3] # With probabilities (weights)
+>>> np.random.choice(elements, replace=False, size=3, p=p)
+array([4, 5, 3])
+
+>>> np.random.choice(elements, replace=True, size=3, p=p)
+array([5, 5, 2])
+\end{minted}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Groceries}
+\begin{columns}
+\begin{column}{0.50\textwidth}
+    \begin{center}
+     \begin{minted}[fontsize=\footnotesize]{pycon} 
+>>> money_per_day
+array([0, 0, 471.9, 784.22,0,  ...])
+>>> money_per_day.sum()
+8911.18
+     \end{minted}
+     \end{center}	
+\end{column}
+\begin{column}{0.50\textwidth}  %%<--- here
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/groceries_data}
+     \end{figure}
+     \end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+\begin{frame}[fragile]{Groceries}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/groceries_data_resamples}
+ \end{figure}
+ \end{center}
+
+\begin{center}
+\begin{minted}[fontsize=\footnotesize]{python3} 
+import numpy as np
+
+resamples = np.random.choice(money_per_day, 
+            size=(9999, len(money_per_day)), 
+            replace=True)
+\end{minted}
+\end{center}
+     
+\end{frame}
+
+\begin{frame}[fragile]{Groceries}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/groceries_data_resampled}
+ \end{figure}
+ \end{center}
+
+\begin{center}
+\begin{minted}[fontsize=\footnotesize]{python3} 
+import numpy as np
+import matplotlib.pyplot as plt
+
+resamples = np.random.choice(money_per_day, 
+            size=(9999, len(money_per_day)), 
+            replace=True)
+
+plt.hist(resamples.sum(axis=1), bins="auto", 
+         density=True, cumulative=True)
+\end{minted}
+\end{center}
+     
 \end{frame}
 
 
-% ==================================================================================
-\section{Computing}
+% ==================================================================
+% ==================================================================
+% ==================================================================
+\section{Stochastic search}
+
+\begin{frame}[fragile]{Wind farm layout optimization}
+\vspace*{-1em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/windfarm}
+ \end{figure}
+ \end{center}
+\vspace*{-2em}
+\begin{center}
+Place 25 windmills on the acreage, so as to minimize \\
+(1) distance to closest neighboring windmill \\
+(2) distance to acreage area border (if outside)
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Wind farm layout optimization}
+\vspace*{-1em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/windfarm_random_solution}
+ \end{figure}
+ \end{center}
+\vspace*{-2em}
+\begin{center}
+\begin{minted}[fontsize=\small]{pycon}
+>>> points = np.random.uniform(size=(25, 2))
+>>> objective(points)
+17.6388238637308
+\end{minted}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Wind farm layout optimization}
+\vspace*{-1em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/windfarm_hc}
+ \end{figure}
+ \end{center}
+\vspace*{-2em}
+\begin{center}
+\begin{minted}[fontsize=\footnotesize]{pycon}
+>>> idx = np.random.choice(np.arange(points.shape[0]))
+>>> points[idx, :] += np.random.normal(loc=0, scale=0.05, size=(2))
+\end{minted}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Wind farm layout optimization}
+\vspace*{-1em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/windfarm_sa}
+ \end{figure}
+ \end{center}
+\vspace*{-2em}
+\begin{center}
+\begin{minted}[fontsize=\footnotesize]{python3}
+    suggestion = permute_solution(points)
+
+    accept_worse = np.random.rand() < np.exp(-0.01 * iteration)
+    if objective(suggestion) < objective(points) or accept_worse:
+        points = suggestion
+\end{minted}
+\end{center}
+\end{frame}
 
 
-\begin{frame}[fragile]{Greedy algorithm}
-	
-\begin{figure}
-	\centering
-	% \includegraphics[width=0.7\linewidth]{figs/greedy_party}
-\end{figure}
-	
-\begin{easylist}[itemize]
-	# Start with an empty party $P := \{\}$
-	# while $|P| < 6$ do:
-	## go through every non-chosen candiate $c$
-	### evaluate the resulting party $P \cup c$
-	## select the best non-chosen candidate pokemon $c^\star$
-	## add this Pokémon to the party: $P := P \cup c$
-\end{easylist}
+
+
+% ==================================================================
+% ==================================================================
+% ==================================================================
+\section{Inverse probability (Bayesian statistics)}
+
+\begin{frame}[fragile]{Inverse problems}
+\begin{columns}
+\begin{column}{0.5\textwidth}
+    \begin{center}
+\textbf{Deterministic}\\
+\vspace*{2em}
+\textbf{Forward (simulation)} \\
+Given input x,\\determine the output f(x) \\
 \vspace*{1em}
-Complexity: $151 + 150 + \cdots + 146 = 891$ evaluations
+\textbf{Backward (optimization)} \\
+Given output y = f(x),\\find the input x
+     \end{center}
+\end{column}
+\begin{column}{0.5\textwidth}  %%<--- here
+    \begin{center}
+\textbf{Stochastic}\\
+\vspace*{2em}
+\textbf{Foward (Monte Carlo)} \\
+Given a distribution over x,\\find the distribution f(x) \\
+\vspace*{1em}
+\textbf{Backward (Bayes)} \\
+Given a distribution y = f(x),\\find the distribution of input x
+     \end{center}
+\end{column}
+\end{columns}
+\end{frame}
+
+
+
+\begin{frame}[fragile]{References and further reading}
+\begin{easylist}[itemize]
+# Book 1
+# Book 2
+# Book 3
+\end{easylist}
 \end{frame}
 
 \end{document}
