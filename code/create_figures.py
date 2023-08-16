@@ -39,6 +39,32 @@ random.gauss(0, 1)
 SAVE_DIR = os.path.join("..", "presentation", "figures")
 
 # %% [markdown]
+# # Knut's figures
+
+# %%
+# Knuts earlier figures
+
+from matplotlib.path import Path
+from matplotlib.patches import PathPatch
+
+fig, axs = plt.subplots(1, 3, figsize=(9, 2))
+
+for ax in axs:
+    ax.set_ylim([0, 1.1])
+    ax.set_xlim([-0.1, 2.1])
+    ax.yaxis.set_major_locator(plt.FixedLocator([0, 0.5, 1]))
+
+axs[0].fill_between([0, 1], 0, 1, color='blue', edgecolor='black')
+axs[1].fill_between([0, 1], 0, 1, color='yellow', edgecolor='black' )
+
+codes = [Path.MOVETO] + [Path.LINETO]*2 + [Path.CLOSEPOLY]
+vertices = [(0, 0), (1, 1), (2, 0), (0, 0)]
+axs[2].add_patch(PathPatch(Path(vertices, codes), facecolor='green', edgecolor='black'))
+
+plt.subplots_adjust(wspace=0.5)
+fig.savefig(os.path.join(SAVE_DIR, "add_uniform.pdf"))
+
+# %% [markdown]
 # # General figures
 
 # %%
