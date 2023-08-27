@@ -27,6 +27,9 @@
 \usepackage{multirow}
 \usepackage{xcolor}
 
+\definecolor{links}{HTML}{2A1B81}
+\hypersetup{colorlinks,linkcolor=,urlcolor=links}
+
 % https://tex.stackexchange.com/questions/159667/including-python-code-in-beamer
 % https://ftp.eq.uc.pt/software/TeX/macros/latex/contrib/minted/minted.pdf
 \usepackage{minted}
@@ -70,10 +73,13 @@
 % Set fonts to Open Sans and Ubuntu mono
 \usefonttheme{professionalfonts}
 \usepackage{fontspec}
-\setmainfont{Open Sans}
-\setsansfont{Open Sans}
+%\setmainfont{Open Sans}
+%\setsansfont{Open Sans}
 \setmonofont{Ubuntu Mono}
-\usefonttheme{serif}
+%\usefonttheme{serif}
+
+\usepackage[mathrm=sym]{unicode-math}
+\setmathfont{Fira Math}
 
 %gets rid of bottom navigation symbols
 \setbeamertemplate{navigation symbols}{}
@@ -153,9 +159,10 @@
 	\vfill
 	{\large  Tommy Odland and Knut Utne Hollund}
 	\vfill
-	{\small \texttt{https://github.com/tommyod/rng}}
+	{\small \href{https://github.com/tommyod/rng}{https://github.com/tommyod/rng}}
+
 	\vfill
-	\today
+	September XX, 2023
 	\vfill
 	\end{center}
 \end{frame}
@@ -167,18 +174,30 @@
 	\end{center}
 	
 	\begin{easylist}[itemize]
-		# \textbf{Modeling}: Define what we mean by a good party
-		# \textbf{Computing}: Learn how to find the best party efficiently
-		## $\binom{151}{6} = 14\,888\,600\,755$ possible parties
-		## Checking every possible party takes $\approx 5$ days
-		# \textbf{Inspection}: Evaluate party using Shapley values
+		# \textbf{Random Variables}: 
+		# \textbf{Monte Carlo Simulation}: 
+		# \textbf{Resampling}: 
+		# \textbf{Stochastic Search}: 
+		# \textbf{Bayesian Statistics}: 
 	\end{easylist}
 \end{frame}
 
 % ==================================================================
 % ==================================================================
 % ==================================================================
-\section{Introduction}
+\section{Random Variables}
+
+\begin{frame}[fragile]{Adding random variables}
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/add_uniform}
+     \end{figure}
+     \end{center}
+     $10$-percentile \hspace*{1em} $0.1$ \hspace*{5em}  $0.1$ \hspace*{7em} $0.447$ \\
+     $50$-percentile \hspace*{1em} $0.5$ \hspace*{5em}  $0.5$ \hspace*{7em} $1$ \\
+     $90$-percentile \hspace*{1em} $0.9$ \hspace*{5em}  $0.9$ \hspace*{7em} $1.553$
+\end{frame}
 
 
 \begin{frame}[fragile]{Probability Density Functions (PDFs)}
@@ -277,7 +296,7 @@
 % ==================================================================
 % ==================================================================
 % ==================================================================
-\section{Monte Carlo}
+\section{Monte Carlo Simulation}
 
 \begin{frame}[fragile]{Cannonball}
 \vspace*{-1em}
@@ -418,6 +437,38 @@ array([5, 5, 2])
 \end{minted}
 \end{center}
 \end{frame}
+
+\begin{frame}[fragile]{Height and pulse}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/height_pulse_base.pdf}
+ \end{figure}
+ Is this a statistically significant correlation?
+ \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Height and pulse}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/height_pulse_resamples.pdf}
+ \end{figure}
+ We sample the dataset by drawing pairs with replacement.
+ \end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]{Height and pulse}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/height_pulse_coefs_binned.pdf}
+ \end{figure}
+ Plot the distribution of resampled correlation coefficients.
+ \end{center}
+\end{frame}
+
 
 \begin{frame}[fragile]{Groceries}
 \begin{columns}
@@ -599,13 +650,130 @@ Given a distribution y = f(x),\\find the distribution of input x
 \end{frame}
 
 
+\begin{frame}[fragile]{Mutual fund revisited}
+\vspace*{-1em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/esmda_observations.pdf}
+ \end{figure}
+ Given a prior $p(x)$ on parameters $x$ and a likelihood $p(y \mid x)$,
+ we wish to find $(x \mid y) \propto p(y \mid x) p(x)$.
+ \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Mutual fund revisited}
+\vspace*{-1em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/esmda_observations.pdf}
+ \end{figure}
+\begin{align*}
+\log p(x \mid y) 
+&\propto \log p(y \mid x) + \log p(x) \\
+&\propto
+\underbrace{(g(x) - d)^T C_D^{-1} (g(x) - d)}_{\text{distance from observed values}} +
+\underbrace{(x - \mu)^T C_M^{-1} (x - \mu) }_{\text{distance from prior}}
+\end{align*}
+ \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Mutual fund revisited}
+\vspace*{-1em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/esmda_prior_no_truth.pdf}
+ \end{figure}
+ Here we see a prior $p(\theta)$ on parameters ``interest rate'' and ``deposit.''\footnote{We'll use ESMDA from the Equinor repository\\ \href{https://github.com/equinor/iterative_ensemble_smoother}{https://github.com/equinor/iterative\_ensemble\_smoother}}
+ \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Mutual fund revisited}
+\vspace*{-1em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/esmda_step_1.pdf}
+ \end{figure}
+  Running data assimilation iterations ...
+ \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Mutual fund revisited}
+\vspace*{-1em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/esmda_step_2.pdf}
+ \end{figure}
+   Running data assimilation iterations ...
+ \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Mutual fund revisited}
+\vspace*{-1em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/esmda_step_3.pdf}
+ \end{figure}
+   Running data assimilation iterations ...
+ \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Mutual fund revisited}
+\vspace*{-1em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/esmda_step_4.pdf}
+ \end{figure}
+   Running data assimilation iterations ...
+ \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Mutual fund revisited}
+\vspace*{-1em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/esmda_step_5.pdf}
+ \end{figure}
+   Running data assimilation iterations ...
+ \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Mutual fund revisited}
+\vspace*{-1em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/esmda_posterior_no_truth.pdf}
+ \end{figure}
+ We now have samples from $p(x \mid y)$\\ \vspace*{1em}
+ A balance of (1) respecting the prior \\and (2) matching the observations
+ \end{center}
+\end{frame}
+
+
 
 \begin{frame}[fragile]{References and further reading}
+\scriptsize
 \begin{easylist}[itemize]
-# Book 1
-# Book 2
-# Book 3
+# Statistics
+## Statistical Inference by Casella et al (2001).
+## All of Statistics by Larry Wasserman (2010).
+## Statistical Rethinking by Richard McElreath (2020).
+# Optimization by search
+## Artificial Intelligence: A Modern Approach by Norvig et al (2009).
+## Essentials of Metaheuristics by Sean Luke (2012).
+# Popular science
+## The Visual Display of Quantitative Information by Edward R. Tufte (2001).
+## Flaws and Fallacies in Statistical Thinking by Stephen K. Campbell (2012).
 \end{easylist}
+\normalsize
 \end{frame}
 
 \end{document}

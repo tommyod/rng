@@ -31,6 +31,10 @@ COLORS = plt.rcParams['axes.prop_cycle'].by_key()['color']
 # %matplotlib inline
 
 # %%
+np.random.seed(42)
+rng = np.random.default_rng(42)
+
+# %%
 import random
 
 random.gauss(0, 1)
@@ -39,7 +43,7 @@ random.gauss(0, 1)
 SAVE_DIR = os.path.join("..", "presentation", "figures")
 
 # %% [markdown]
-# # Knut's figures
+# # Knut's figures - adding distributions
 
 # %%
 # Knuts earlier figures
@@ -47,22 +51,35 @@ SAVE_DIR = os.path.join("..", "presentation", "figures")
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 
-fig, axs = plt.subplots(1, 3, figsize=(9, 2))
+fig, axs = plt.subplots(1, 3, figsize=(8, 2), sharex=True, sharey=True)
 
 for ax in axs:
     ax.set_ylim([0, 1.1])
     ax.set_xlim([-0.1, 2.1])
     ax.yaxis.set_major_locator(plt.FixedLocator([0, 0.5, 1]))
+    ax.set_xticks([0, 1, 2])
 
-axs[0].fill_between([0, 1], 0, 1, color='blue', edgecolor='black')
-axs[1].fill_between([0, 1], 0, 1, color='yellow', edgecolor='black' )
+axs[0].fill_between([0, 1], 0, 1, color=COLORS[0], edgecolor='black')
+axs[1].fill_between([0, 1], 0, 1, color=COLORS[1], edgecolor='black' )
 
 codes = [Path.MOVETO] + [Path.LINETO]*2 + [Path.CLOSEPOLY]
 vertices = [(0, 0), (1, 1), (2, 0), (0, 0)]
-axs[2].add_patch(PathPatch(Path(vertices, codes), facecolor='green', edgecolor='black'))
+axs[2].add_patch(PathPatch(Path(vertices, codes), facecolor=COLORS[2], edgecolor='black'))
 
-plt.subplots_adjust(wspace=0.5)
+fig.tight_layout()
+fig.subplots_adjust(wspace=0.2)
+
+
 fig.savefig(os.path.join(SAVE_DIR, "add_uniform.pdf"))
+
+# %%
+uniform = stats.uniform()
+triangular = stats.triang(loc=0, scale=2, c=0.5) # Sum of two uniforms
+
+print(uniform.ppf(0.1), triangular.ppf(0.1))
+print(uniform.ppf(0.5), triangular.ppf(0.5))
+print(uniform.ppf(0.9), triangular.ppf(0.9))
+
 
 # %% [markdown]
 # # General figures
@@ -582,3 +599,223 @@ ax2.set_yticks([])
 
 fig.tight_layout()
 fig.savefig(os.path.join(SAVE_DIR, "windfarm_sa.pdf"))
+
+# %% [markdown]
+# # Resampling correlation
+
+# %%
+paitent_height = np.array(
+    [
+        160,
+        172,
+        167,
+        185,
+        162,
+        163,
+        175,
+        177,
+        185,
+        165,
+        162,
+        182,
+        173,
+        162,
+        167,
+        172,
+        170,
+        177,
+        170,
+        168,
+        163,
+        178,
+        158,
+        182,
+        157,
+        167,
+        160,
+        170,
+        170,
+        160,
+        177,
+        182,
+        166,
+        168,
+        170,
+        155,
+        148,
+        175,
+        175,
+        168,
+        160,
+        180,
+        153,
+        175,
+        185,
+        145,
+        165,
+        170,
+        165,
+        175,
+    ]
+)
+
+patient_pulse = np.array(
+    [
+        68,
+        116,
+        80,
+        80,
+        84,
+        95,
+        80,
+        80,
+        80,
+        76,
+        80,
+        100,
+        92,
+        88,
+        92,
+        90,
+        80,
+        90,
+        80,
+        90,
+        80,
+        80,
+        80,
+        76,
+        80,
+        80,
+        78,
+        84,
+        90,
+        80,
+        80,
+        80,
+        72,
+        80,
+        80,
+        80,
+        82,
+        104,
+        76,
+        80,
+        84,
+        68,
+        70,
+        84,
+        80,
+        64,
+        82,
+        84,
+        84,
+        72,
+    ]
+)
+
+# %%
+fig, ax = plt.subplots(figsize=(5, 2.5))
+
+regression_result = stats.linregress(paitent_height, patient_pulse)
+
+x_smooth = np.linspace(np.min(paitent_height), np.max(paitent_height))
+
+ax.plot(
+    x_smooth,
+    regression_result.intercept + x_smooth * regression_result.slope,
+    color=COLORS[1],
+    zorder=25,
+)
+
+ax.set_title(f"Correlation: {round(regression_result.rvalue, 4)}")
+
+ax.scatter(paitent_height, patient_pulse, alpha=0.8, zorder=10)
+ax.grid(True, ls="--", alpha=0.5, zorder=0)
+ax.set_xlabel("Height")
+ax.set_ylabel("Pulse")
+fig.tight_layout()
+fig.savefig(os.path.join(SAVE_DIR, "height_pulse_base.pdf"))
+
+print(regression_result.rvalue) # The Pearson correlation coefficient.
+
+# %%
+from sklearn.utils import resample
+
+fig, axes = plt.subplots(3, 3, figsize=(8, 4), sharex=True, sharey=True)
+axes = axes.ravel()
+
+x_smooth = np.linspace(np.min(paitent_height), np.max(paitent_height))
+
+for i, ax in enumerate(axes):
+    
+    # Resample dataset and draw it
+    x_r, y_r = resample(paitent_height, patient_pulse, n_samples=len(paitent_height),
+                       random_state=i)
+    ax.scatter(x_r, y_r, alpha=0.8, zorder=10, s=15)
+    
+    
+    # Regression line
+    regression_result = stats.linregress(x_r, y_r)
+    ax.plot(
+        x_smooth,
+        regression_result.intercept + x_smooth * regression_result.slope,
+        color=COLORS[1],
+        zorder=25,
+    )
+
+    #ax.scatter(paitent_height, patient_pulse, alpha=0.8, zorder=10)
+    ax.grid(True, ls="--", alpha=0.5, zorder=0)
+    #ax.set_xlabel("Height")
+    #ax.set_ylabel("Pulse")
+    ax.set_title(f"Correlation: {round(regression_result.rvalue, 4)}")
+    
+fig.tight_layout()
+fig.savefig(os.path.join(SAVE_DIR, "height_pulse_resamples.pdf"))
+    
+
+# %%
+regression_result = stats.linregress(paitent_height, patient_pulse)
+
+fig, ax = plt.subplots(figsize=(5.5, 3))
+
+
+ax.axvline(x=regression_result.rvalue, label="Observed correlation", zorder=15, color="black", ls="--")
+
+
+
+# Compute histogram
+resampled_correlations = []
+for iteration in range(9999):
+    # Resample dataset
+    x_r, y_r = resample(paitent_height, patient_pulse, n_samples=len(paitent_height),
+                       random_state=iteration)
+    # Compute correlation
+    regression_result = stats.linregress(x_r, y_r)
+    resampled_correlations.append(regression_result.rvalue)
+
+    
+resampled_correlations = np.array(resampled_correlations)
+ax.hist(resampled_correlations, bins="fd", label="Resampled correlations", zorder=10,
+       density=True)
+    
+ax.grid(True, ls="--", alpha=0.5, zorder=0)
+ax.legend()
+ax.set_title(f"Proportion of resampled coefficients over 0 was {round((resampled_correlations > 0).mean(), 4)}")
+ax.set_xlabel("Correlation coefficients")
+fig.tight_layout()
+fig.savefig(os.path.join(SAVE_DIR, "height_pulse_coefs_binned.pdf"))
+
+# %%
+
+# %%
+
+# %%
+
+# %%
+
+# %%
+
+# %%
+
+# %%
