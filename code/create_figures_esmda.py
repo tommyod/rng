@@ -68,10 +68,12 @@ def plot_ensemble(observations, X, title=None, truth=True):
         fig.suptitle(title, fontsize=14)
 
     x = np.arange(len(observations))
-    axes[0].plot(x, observations, label="Observations", zorder=10, lw=3)
+    axes[0].plot(x, observations, label="Observations", zorder=10, lw=3, color=COLORS[1])
     for simulation in G(X).T:
-        axes[0].plot(x, simulation, color="black", alpha=0.33, zorder=0)
+        axes[0].plot(x, simulation, color=COLORS[0], alpha=0.33, zorder=0)
     axes[0].legend()
+    axes[0].set_ylim([-1000, np.max(observations) * 1.25])
+    axes[0].set_xlim([-1, len(observations) - 1])
 
     axes[1].set_title("Interest rate")
     axes[1].hist(X[0, :], bins="fd")
@@ -85,7 +87,9 @@ def plot_ensemble(observations, X, title=None, truth=True):
         axes[2].axvline(x=DEPOSIT, label="Truth", color="black", ls="--")
         axes[2].legend()
 
-    axes[3].scatter(*X)
+    axes[3].scatter(*X, s=15)
+    #axes[3].set_xlabel("Interest rate")
+    #axes[3].set_ylabel("Deposit")
     if truth:
         axes[3].scatter([INTEREST_RATE], [DEPOSIT], label="Truth", color="black", s=50)
         axes[3].legend()
@@ -100,7 +104,7 @@ def plot_ensemble(observations, X, title=None, truth=True):
 
 # %%
 num_observations = 25  # Number of years we simulate the mutual fund account
-num_ensemble = 250  # Number of ensemble members
+num_ensemble = 100  # Number of ensemble members
 
 
 def g(interest_rate, deposit, obs=None):
@@ -146,7 +150,7 @@ assert X_prior.shape == (2, num_ensemble)
 fig, ax = plt.subplots(1, 1, figsize=(6, 2.5))
 
 x = np.arange(len(observations))
-ax.plot(x, observations, label="Observations", zorder=10, lw=3)
+ax.plot(x, observations, label="Observations", zorder=10, lw=3, color=COLORS[1])
 ax.grid(True, ls="--", zorder=0, alpha=0.5)
 
 fig.tight_layout()
@@ -161,6 +165,7 @@ plt.show()
 # %%
 fig, axes = plot_ensemble(observations, X_prior, title="Prior distribution", truth=False)
 fig.savefig(os.path.join(SAVE_DIR, "esmda_prior_no_truth.pdf"))
+# fig.subplots_adjust(wspace=0.25)
 plt.show()
 
 # %% [markdown]
@@ -176,11 +181,13 @@ X_i = np.copy(X_prior)
 for assimilation in range(esmda.num_assimilations()):
     X_i = esmda.assimilate(X_i, Y=G(X_i))
 
-    plot_ensemble(
+    fig, axes = plot_ensemble(
         observations,
         X_i,
         title=f"Posterior after assimilation step {assimilation+1} / {esmda.num_assimilations()}",
+        truth=False,
     )
+    fig.savefig(os.path.join(SAVE_DIR, f"esmda_step_{assimilation+1}.pdf"))
     plt.show()
 
 # %%
