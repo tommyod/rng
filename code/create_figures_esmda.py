@@ -199,5 +199,3 @@ plt.show()
 fig, axes = plot_ensemble(observations, X_i, title="Posterior distribution", truth=False)
 fig.savefig(os.path.join(SAVE_DIR, "esmda_posterior_no_truth.pdf"))
 plt.show()
-
-# %%

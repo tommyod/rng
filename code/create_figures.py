@@ -805,17 +805,3 @@ ax.set_title(f"Proportion of resampled coefficients over 0 was {round((resampled
 ax.set_xlabel("Correlation coefficients")
 fig.tight_layout()
 fig.savefig(os.path.join(SAVE_DIR, "height_pulse_coefs_binned.pdf"))
-
-# %%
-
-# %%
-
-# %%
-
-# %%
-
-# %%
-
-# %%
-
-# %%
