@@ -213,14 +213,12 @@
 \begin{frame}[fragile]{Probability}
 
 	Probability $P$ is a numerical function defined on events in a sample space $S$, that satisfies:
-
-	\begin{equation*}
-		\begin{align}
-			& 0 \leq P(A) \leq 1 & \text{for all events $A$} \\
-			& P(S) = 1 \\
-			& p(A_{1} \cup A_{2} \cup \ldots) \hspace*{1em} & \text{for all disjoint events $A_{1}, A_{2}, \ldots$,}	
-		\end{align}
-	\end{equation*}    
+	\begin{align*}
+		& 0 \leq P(A) \leq 1 & \text{for all events $A$} \\
+		& & P(S) = 1 \\
+		& p(A_{1} \cup A_{2} \cup \ldots) \hspace*{1em} & \text{for all disjoint events $A_{1}, A_{2}, \ldots$,}	
+	\end{align*}  
+	
 \end{frame}
 
 \begin{frame}[fragile]{Random Variables}
@@ -343,22 +341,19 @@
 
 \begin{frame}[fragile]{Computational Rules}
 	Mean (expected value):
-	\begin{equation*}
-		\begin{flalign}
+	\begin{flalign*}
 			& E(a + bX) = a + bE(X) \\
 			& E(X + Y) = E(X) + E(Y) \\
 			& E(XY) = E(X)E(Y) \hspace*{1em} \text{if $X$ and $Y$ are independent} \\
 			& E(XY) \neq E(X)E(Y) \hspace*{1em} \text{if $X$ and $Y$ are dependent}
-		\end{flalign}
-	\end{equation*}
+	\end{flalign*}
 	Variance:
-	\begin{equation*}
-		\begin{align}
+
+		\begin{align*}
 			& Var(a + bX) = b^{2}Var(X) \\
 			& Var(X + Y) = Var(X) + Var(Y) + 2Cov(X,Y) \\
 			& Var(X - Y) = Var(X) + Var(Y) - 2Cov(X,Y) \\
-		\end{align}
-	\end{equation*}
+		\end{align*}
 	\onslide<2->{
 		\begin{tikzpicture}[remember picture, overlay]
 			\draw[line width=10pt, red] 
