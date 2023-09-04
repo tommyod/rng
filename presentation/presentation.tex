@@ -385,6 +385,23 @@
  \vspace*{-2em}
 
 \begin{center}
+\begin{equation*}
+x_{\text{final}} = f(\theta, v_0)
+\end{equation*}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Cannonball}
+\vspace*{-1em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/cannonball}
+ \end{figure}
+ \end{center}
+ \vspace*{-2em}
+
+\begin{center}
 \begin{minted}[fontsize=\footnotesize]{python3} 
 angle = np.deg2rad(45)
 velocity = 10
@@ -415,6 +432,26 @@ velocity = random.gauss(10, 0.01 * 10)          # 1 % relative error
 final_x = 2 * velocity**2 * np.cos(angle) * np.sin(angle) / g
 \end{minted}
 \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Mutual fund}
+\begin{columns}
+\begin{column}{0.55\textwidth}
+    \begin{center}
+	\begin{equation*}
+	\textbf{money} = f(\text{yearly}, \text{interest\_rate})
+	\end{equation*}
+     \end{center}
+\end{column}
+\begin{column}{0.45\textwidth}  %%<--- here
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/mutual_fund}
+     \end{figure}
+     \end{center}
+\end{column}
+\end{columns}
 \end{frame}
 
 \begin{frame}[fragile]{Mutual fund}
@@ -487,6 +524,19 @@ list(simulate_rng(years, yearly, interest))
 \end{columns}
 \end{frame}
 
+
+\begin{frame}[fragile]{Monte Carlo Simulation}
+	
+	\begin{easylist}[itemize]
+		# Uses uncertainty in inputs $\mathbf{x}$ to study uncertainty in $f(\mathbf{x})$
+		# Draw many random realization of $\mathbf{x}$ and examine the outputs
+		# It requires very little math and is easy to program
+		# Cons:
+		## It can be hard to create distributions for $\mathbf{x}$
+		## Sometimes $f$ is time consuming to compute
+	\end{easylist}
+\end{frame}
+
 % ==================================================================
 % ==================================================================
 % ==================================================================
@@ -556,6 +606,8 @@ array([0, 0, 471.9, 784.22,0,  ...])
 >>> money_per_day.sum()
 8911.18
      \end{minted}
+     \vspace*{2em}
+     How much do I spend on\\groceries per month?
      \end{center}	
 \end{column}
 \begin{column}{0.50\textwidth}  %%<--- here
@@ -610,7 +662,16 @@ plt.hist(resamples.sum(axis=1), bins="auto",
          density=True, cumulative=True)
 \end{minted}
 \end{center}
-     
+\end{frame}
+
+\begin{frame}[fragile]{Resampling}
+	
+	\begin{easylist}[itemize]
+		# Often called \emph{bootstrapping}
+		# Resampling with replacement gives estimates of uncertainty
+		## The mean, the median, \textbf{the sum}, the standard devaiation, \textbf{the correlation}, the difference between two groups
+		# Beware of small samples
+	\end{easylist}
 \end{frame}
 
 
@@ -692,13 +753,16 @@ Place 25 windmills on the acreage, so as to minimize \\
 
 
 \begin{frame}[fragile]{Stochastic search}
-	\begin{center}
-		% \includegraphics[width=0.7\linewidth]{figs/best_party}
-	\end{center}
-	
 	\begin{easylist}[itemize]
-		# Pros:
-		# Cons:
+		# For combinatorial problems with non-linear objectives
+		# In its simplest form: try, evaluate, try again
+		## More advanced: simulated annealing
+		% # Constraints may be softened and put into the objective
+		# You need: a way to generate solutions, objective to evaluate
+		# Beware:
+		## If the objective has simple form, exploit it (MIP)
+		## No guarantees of optimal solution, it's a heuristic only
+		## Typically poor performance on contrained problems
 	\end{easylist}
 \end{frame}
 
