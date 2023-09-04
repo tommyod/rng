@@ -167,14 +167,28 @@
 	\end{center}
 \end{frame}
 
-
 \begin{frame}[fragile]{Agenda}
 	\begin{center}
 		% \includegraphics[width=0.7\linewidth]{figs/best_party}
 	\end{center}
 	
 	\begin{easylist}[itemize]
-		# \textbf{Random Variables}: 
+		# \textbf{Statistical Concepts}: 
+		# \textbf{Monte Carlo Simulation}: 
+		# \textbf{Resampling}: 
+		# \textbf{Stochastic Search}: 
+		# \textbf{Bayesian Statistics}: 
+	\end{easylist}
+\end{frame}
+
+\begin{frame}[fragile]{Agenda}
+	\begin{easylist}[itemize]
+		# \textbf{Statistical Concepts}: 
+		##	\textbf{Probability} 
+		##	\textbf{Random Variables} 
+		##	\textbf{PDF and CDF}
+		##	\textbf{Mean, Median, Most Likely and Percentiles}
+		##	\textbf{Computing with Random Variables}
 		# \textbf{Monte Carlo Simulation}: 
 		# \textbf{Resampling}: 
 		# \textbf{Stochastic Search}: 
@@ -185,19 +199,41 @@
 % ==================================================================
 % ==================================================================
 % ==================================================================
-\section{Random Variables}
+\section{Statistical Concepts}
 
-\begin{frame}[fragile]{Adding random variables}
-    \begin{center}
-     \begin{figure}
-     	\centering
-     	\includegraphics[width=0.99\linewidth]{figures/add_uniform}
-     \end{figure}
-     \end{center}
-     $10$-percentile \hspace*{1em} $0.1$ \hspace*{5em}  $0.1$ \hspace*{7em} $0.447$ \\
-     $50$-percentile \hspace*{1em} $0.5$ \hspace*{5em}  $0.5$ \hspace*{7em} $1$ \\
-     $90$-percentile \hspace*{1em} $0.9$ \hspace*{5em}  $0.9$ \hspace*{7em} $1.553$
+\begin{frame}[fragile]{Probability}
+	
+	\begin{easylist}[itemize]
+		# \textbf{What is the probability of a dry expolation well?}
+		# \textbf{On our planned windfarm, What is the chance of exceeding the budget?}
+		# \textbf{For Oseberg South Oil Field, What is the chance of production efficiency less than 1?}
+	\end{easylist}
 \end{frame}
+
+\begin{frame}[fragile]{Probability}
+
+	Probability $P$ is a numerical function defined on events in a sample space $S$, that satisfies:
+
+	\begin{equation*}
+		\begin{align}
+			& 0 \leq P(A) \leq 1 & \text{for all events $A$} \\
+			& P(S) = 1 \\
+			& p(A_{1} \cup A_{2} \cup \ldots) \hspace*{1em} & \text{for all disjoint events $A_{1}, A_{2}, \ldots$,}	
+		\end{align}
+	\end{equation*}    
+\end{frame}
+
+\begin{frame}[fragile]{Random Variables}
+
+	A function from a sample space to measurable space (e.g., ${-1, 1}$)
+
+	\begin{easylist}[itemize]
+		# \textbf{Discrete}
+		# \textbf{Continious}
+			\end{easylist}
+\end{frame}
+
+
 
 
 \begin{frame}[fragile]{Probability Density Functions (PDFs)}
@@ -292,6 +328,51 @@
 \end{column}
 \end{columns}
 \end{frame}
+
+\begin{frame}[fragile]{Computing with random variables}
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/add_uniform}
+     \end{figure}
+     \end{center}
+     $10$-percentile \hspace*{1em} $0.1$ \hspace*{5em}  $0.1$ \hspace*{7em} $0.447$ \\
+     $50$-percentile \hspace*{1em} $0.5$ \hspace*{5em}  $0.5$ \hspace*{7em} $1$ \\
+     $90$-percentile \hspace*{1em} $0.9$ \hspace*{5em}  $0.9$ \hspace*{7em} $1.553$
+\end{frame}
+
+\begin{frame}[fragile]{Computational Rules}
+	Mean (expected value):
+	\begin{equation*}
+		\begin{flalign}
+			& E(a + bX) = a + bE(X) \\
+			& E(X + Y) = E(X) + E(Y) \\
+			& E(XY) = E(X)E(Y) \hspace*{1em} \text{if $X$ and $Y$ are independent} \\
+			& E(XY) \neq E(X)E(Y) \hspace*{1em} \text{if $X$ and $Y$ are dependent}
+		\end{flalign}
+	\end{equation*}
+	Variance:
+	\begin{equation*}
+		\begin{align}
+			& Var(a + bX) = b^{2}Var(X) \\
+			& Var(X + Y) = Var(X) + Var(Y) + 2Cov(X,Y) \\
+			& Var(X - Y) = Var(X) + Var(Y) - 2Cov(X,Y) \\
+		\end{align}
+	\end{equation*}
+	\onslide<2->{
+		\begin{tikzpicture}[remember picture, overlay]
+			\draw[line width=10pt, red] 
+			  	(current page.north west) -- (current page.south east);
+			\draw[line width=10pt, red] 
+			  	(current page.north east) -- (current page.south west);
+			% \draw[fill, white](current page.center, current page.center) ;	
+		\end{tikzpicture}
+		\begin{tikzpicture}[remember picture]
+			
+		\end{tikzpicture}
+	}
+	\end{frame}
+
 
 % ==================================================================
 % ==================================================================
