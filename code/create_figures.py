@@ -431,6 +431,11 @@ borders = Polygon(border_coords)
 
 # %%
 def objective(points):
+    """Objective function to minimize."""
+    
+    # We want to maximize the minimum distance, rougly speaking.
+    # However, we smooth the objective a little bit, compared to
+    # actually implementing maximize min(distance)
     
     distances = cdist(np.array(points), np.array(points))
     
@@ -772,7 +777,7 @@ for i, ax in enumerate(axes):
     
 fig.tight_layout()
 fig.savefig(os.path.join(SAVE_DIR, "height_pulse_resamples.pdf"))
-    
+
 
 # %%
 regression_result = stats.linregress(paitent_height, patient_pulse)
