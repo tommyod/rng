@@ -1,0 +1,29 @@
+name: Build LaTeX document
+on: [push]
+jobs:
+  build_latex:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Git repository
+        uses: actions/checkout@v3
+        
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.9
+          
+      - name: Install pygments
+        run: pip install pygments
+        
+      - name: Compile LaTeX document
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: presentation/main.tex
+          latexmk_use_xelatex: true
+          latexmk_shell_escape: true
+          
+      - name: Upload PDF file
+        uses: actions/upload-artifact@v3
+        with:
+          name: PDF
+          path: presentation.pdf
