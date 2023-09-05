@@ -24,6 +24,8 @@ jobs:
           work_in_root_file_dir: true
           latexmk_use_xelatex: true
           latexmk_shell_escape: true
+          extra_fonts: |
+            ./presentation/fonts/*.ttf
           
       - name: Upload PDF file
         uses: actions/upload-artifact@v3
