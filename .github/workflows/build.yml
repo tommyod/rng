@@ -20,7 +20,7 @@ jobs:
       - name: Compile LaTeX document
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: presentation/main.tex
+          root_file: presentation/presentation.tex
           work_in_root_file_dir: true
           latexmk_use_xelatex: true
           latexmk_shell_escape: true
