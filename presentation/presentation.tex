@@ -438,6 +438,7 @@ final_x = 2 * velocity**2 * np.cos(angle) * np.sin(angle) / g
 \begin{columns}
 \begin{column}{0.55\textwidth}
     \begin{center}
+    \vspace*{-4em}
 	\begin{equation*}
 	\textbf{money} = f(\text{yearly}, \text{interest\_rate})
 	\end{equation*}
@@ -530,8 +531,8 @@ list(simulate_rng(years, yearly, interest))
 	\begin{easylist}[itemize]
 		# Uses uncertainty in inputs $\mathbf{x}$ to study uncertainty in $f(\mathbf{x})$
 		# Draw many random realization of $\mathbf{x}$ and examine the outputs
-		# It requires very little math and is easy to program
-		# Cons:
+		# Given $f$, it requires little math and is easy to program
+		# Beware:
 		## It can be hard to create distributions for $\mathbf{x}$
 		## Sometimes $f$ is time consuming to compute
 	\end{easylist}
@@ -670,7 +671,9 @@ plt.hist(resamples.sum(axis=1), bins="auto",
 		# Often called \emph{bootstrapping}
 		# Resampling with replacement gives estimates of uncertainty
 		## The mean, the median, \textbf{the sum}, the standard devaiation, \textbf{the correlation}, the difference between two groups
-		# Beware of small samples
+		# Beware
+		## Sample size should not be too small
+		## Distributional assumptions can be a better choice
 	\end{easylist}
 \end{frame}
 
@@ -907,6 +910,21 @@ Given a distribution y = f(x),\\find the distribution of input x
  We now have samples from $p(x \mid y)$\\ \vspace*{1em}
  A balance of (1) respecting the prior \\and (2) matching the observations
  \end{center}
+\end{frame}
+
+
+\begin{frame}[fragile]{Inverse probability (Bayesian statistics)}
+	\begin{easylist}[itemize]
+		# Find the posterior distribution of parameters, given (1)
+		a prior on the parameters and (2) and likelihood
+		\begin{equation*}
+		p(x \mid y) \propto p(y \mid x) p(x)
+		\end{equation*}
+		# Can be used with most models, e.g. linear regression
+		# Excellent choice in \emph{small data problems}
+		# Data assimilation performs very crude 
+		bayesian inference, but is the only choice when the model is expensive to evaluate
+	\end{easylist}
 \end{frame}
 
 
