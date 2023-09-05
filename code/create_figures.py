@@ -6,9 +6,9 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.14.5
+#       jupytext_version: 1.14.6
 #   kernelspec:
-#     display_name: Python 3
+#     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
@@ -17,7 +17,7 @@
 import matplotlib as mpl
 
 # update matplotlibrc
-mpl.rcParams["font.family"] = "Open Sans"
+# mpl.rcParams["font.family"] = "Open Sans"
 
 # %%
 import matplotlib.pyplot as plt
@@ -44,6 +44,147 @@ SAVE_DIR = os.path.join("..", "presentation", "figures")
 
 # %% [markdown]
 # # Knut's figures - adding distributions
+
+# %%
+import pandas as pd
+
+df = pd.read_excel("snohvit-drilling.xlsx")
+df.columns
+
+# %%
+df.head()
+
+# %%
+category = '12 1/4" - 13 1/2"'
+sub_category = "Drilling"
+
+times = df.loc[lambda df:(df['mapped data_category'] == category) & (df['mapped data_sub_category'] == sub_category)].totaltime.values
+
+# %%
+days = times/24
+
+# %%
+loc = np.min(days)
+logshifted = np.log(days - loc)
+s = np.std((logshifted[np.isfinite(logshifted)]))
+mu = np.mean((logshifted[np.isfinite(logshifted)]))
+scale = np.exp(mu)
+print(s, loc, scale, mu)
+
+rv = stats.lognorm(s=s, loc=loc, scale=scale)
+
+fig, ax = plt.subplots(1, 1, figsize=(4, 3))
+
+x = np.linspace(0, rv.ppf(0.99), 2**10)
+ax.plot(x, rv.pdf(x))
+
+# ax.hist(days, bins="auto", density=True, zorder=0)
+
+plt.arrow(rv.ppf(0.5), rv.pdf(rv.ppf(0.5)), 0, -rv.pdf(rv.ppf(0.5)), length_includes_head=True)
+plt.arrow(rv.mean(), rv.pdf(rv.mean()), 0, -rv.pdf(rv.mean()), length_includes_head=True)
+
+mode, _ = stats.mode(rv.rvs(10000))
+plt.arrow(mode, rv.pdf(mode), 0.0, -rv.pdf(mode), length_includes_head=True)
+
+
+fig.tight_layout()
+
+mean, var = rv.stats(moments='mv') #stats.lognorm.stats(s=sigmaX, loc=0, scale=muX, moments='mv')
+print(mode, mean, var)
+
+# %%
+fig, ax = plt.subplots(1, 1, figsize=(4, 3))
+
+# If your variable (x) HAS THE FORM of a LOGNORMAL,
+# the model will be scipy.stats.lognorm(s=sigmaX, loc=0, scale=muX) with:
+muX = np.mean(np.log(days))
+sigmaX = np.std(np.log(days))
+print(muX, sigmaX)
+rv = stats.lognorm(s=sigmaX, loc=0, scale=np.exp(muX))
+
+x = np.linspace(0, rv.ppf(0.99), 2**10)
+ax.plot(x, rv.pdf(x))
+
+ax.hist(days, bins="auto", density=True, zorder=0)
+
+plt.arrow(rv.ppf(0.5), rv.pdf(rv.ppf(0.5)), 0, -rv.pdf(rv.ppf(0.5)), length_includes_head=True)
+plt.arrow(rv.mean(), rv.pdf(rv.mean()), 0, -rv.pdf(rv.mean()), length_includes_head=True)
+
+mode, _ = stats.mode(rv.rvs(10000))
+plt.arrow(mode, rv.pdf(mode), 0.0, -rv.pdf(mode), length_includes_head=True)
+
+fig.tight_layout()
+
+mean, var = rv.stats(moments='mv') #stats.lognorm.stats(s=sigmaX, loc=0, scale=muX, moments='mv')
+print(mode, mean, var)
+
+# %%
+stats.lognorm.fit(np.log(days))
+
+# %%
+fig, ax = plt.subplots(1, 1, figsize=(4, 3))
+
+s, loc, scale = stats.lognorm.fit(days, loc=8)
+rv = stats.lognorm(s=s, loc=loc, scale=scale)
+x = np.linspace(0, rv.ppf(0.99), 2**10)
+ax.plot(x, rv.pdf(x))
+
+ax.hist(days, bins="auto", density=True, zorder=0)
+fig.tight_layout()
+
+mean, var = rv.stats(moments='mv')
+print(mean, var)
+
+# %%
+rv = stats.lognorm(s=1, loc=1.5, scale=3)
+
+print(rv.ppf(0.1), rv.ppf(0.5), rv.ppf(0.9))
+mode, _ = stats.mode(rv.rvs(10000))
+
+print(mode, rv.ppf(0.5), rv.mean())
+
+# %%
+fig, ax = plt.subplots(1, 1, figsize=(8, 4))
+
+fig.title = '12 1/4 drilling time"'
+x = np.linspace(0, rv.ppf(0.99), 2**10)
+ax.plot(x, rv.pdf(x))
+ax.set_xlim([0, 18])
+ax.set_ylim([-0.003, 0.25])
+# ax.hist(days, bins="auto", density=True, zorder=0)
+
+plt.arrow(rv.ppf(0.5), rv.pdf(rv.ppf(0.5)), 0, -rv.pdf(rv.ppf(0.5)), length_includes_head=True)
+plt.arrow(rv.mean(), rv.pdf(rv.mean()), 0, -rv.pdf(rv.mean()), length_includes_head=True)
+
+# mode, _ = stats.mode(rv.rvs(10000))
+mode = 2.6
+
+plt.arrow(mode, rv.pdf(mode), 0.0, -rv.pdf(mode), length_includes_head=True)
+
+
+fig.tight_layout()
+
+print(f"Mode={mode}  P50={rv.ppf(0.5)}  Mean={rv.mean()}")
+
+fig.savefig(os.path.join(SAVE_DIR, "lognorm_pdf.pdf"))
+
+# %%
+fig, ax = plt.subplots(1, 1, figsize=(8, 4))
+
+x = np.linspace(0, rv.ppf(0.99), 2**10)
+ax.plot(x, rv.cdf(x))
+ax.set_xlim([0, 18])
+ax.set_ylim([0, 1])
+
+for  p in [0.1, 0.5, 0.9]:
+    plt.arrow(rv.ppf(p), rv.cdf(rv.ppf(p)), 0, -rv.cdf(rv.ppf(p)), length_includes_head=True)
+    plt.arrow(0, p, rv.ppf(p), 0, length_includes_head=True)
+
+fig.tight_layout()
+
+print(f"P10={rv.ppf(0.1)}  P50={rv.ppf(0.5)}  P90={rv.ppf(0.9)}")
+
+fig.savefig(os.path.join(SAVE_DIR, "lognorm_cdf.pdf"))
 
 # %%
 # Knuts earlier figures
