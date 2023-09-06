@@ -162,7 +162,7 @@
 	{\small \href{https://github.com/tommyod/rng}{https://github.com/tommyod/rng}}
 
 	\vfill
-	September XX, 2023
+	September 15, 2023
 	\vfill
 	\end{center}
 \end{frame}
@@ -200,36 +200,45 @@
 
 	Probability $P$ is a numerical function defined on events in a sample space $S$, that satisfies:
 	\begin{align*}
-		& 0 \leq P(A) \leq 1 & \text{for all events $A$} \\
-		& & P(S) = 1 \\
-		& p(A_{1} \cup A_{2} \cup \ldots) \hspace*{1em} & \text{for all disjoint events $A_{1}, A_{2}, \ldots$,}	
+		& 0 \leq P(A) \leq 1  & & \text{for all events $A$} \\
+		& P(S) = 1 & & \\
+		& p(A_{1} \cup A_{2} \cup \ldots) & \hspace*{1em} & \text{for all disjoint events $A_{1}, A_{2}, \ldots$,}	
 	\end{align*}  
 	
 \end{frame}
 
-\begin{frame}[fragile]{Random Variables}
-
-	A function from a sample space to measurable space (e.g., ${-1, 1}$)
+\begin{frame}[fragile]{Random Variables and Probability Distributions}
 
 	\begin{easylist}[itemize]
-		# \textbf{Discrete}
-		# \textbf{Continious}
+		# A random variable ($X$) is a function from a sample space to measurable space 
+		## Discrete
+		## Continuous
+		# A probability distribution is a mathematical function that gives the probabilities of occurrence of of different possible outcomes
 	\end{easylist}
+
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.99\linewidth]{figures/pdfs_cdfs}
+	\end{figure}
+
 \end{frame}
 
-\begin{frame}
+\begin{frame}[fragile]{Cumulative distribution function (CDF) and Percentiles}
 \begin{columns}
 	\begin{column}{0.5\textwidth}
 		\begin{easylist}[itemize]
-			# Cumulative Distribution Function (CDF)
-			## Center of gravety of the density
+			# CDF:
+			\begin{equation*}
+				F(x) = \text{Probability of $X \leq x$}
+			\end{equation*}
+		
+			# Percentiles:
+			##  $Pxx$ in a distribution is the value such that the probability is $xx$ \% to obtain values $Pxx$ or less
 
-			# Percentiles
-			##  $P_{xx}$ in a distribution is the value such that the probability is $xx$ \% to obtain values $P_{xx}$
-			## Note! The opposite definition is also frequently used!
-			
+			# Note! The opposite definition is also frequently used!
 		\end{easylist}
 	\end{column}
+
 	\begin{column}{0.5\textwidth}
 		\begin{figure}
 			\centering
@@ -239,19 +248,21 @@
 \end{columns}
 \end{frame}
 
-\begin{frame}
+
+\begin{frame}[fragile]{Expected Value, P50 or Most Likely Value}
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
-			Expected value (Mean):
-			Center of gravety of the density
+			\begin{easylist}[itemize]
+			# Expected value (mean): Center of gravety of the density
 			\begin{equation*}
-				\mu = E(X) = \\
+				\mu = E(X) = \int xg(x)\,dx
 			\end{equation*}
-			Median (P50): Same probability above and below
+			# Median (P50): Same probability above and below
 	
-			Mode: Most likely value
+			# Mode: Most likely value
 	
-			In a symetric distribution all three coincide
+			# In a symetric distribution all three coincide
+			\end{easylist}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{figure}
@@ -262,110 +273,35 @@
 	\end{columns}
 	\end{frame}
 	
-	
-\begin{frame}[fragile]{Probability Density Functions (PDFs)}
-\begin{columns}
-\begin{column}{0.5\textwidth}
-    \begin{center}
-     \begin{figure}
-     	\centering
-     	\includegraphics[width=0.99\linewidth]{figures/uniform}
-     \end{figure}
-     \begin{minted}{pycon}
->>> import random
->>> random.random()
-0.9757805031464292
-     \end{minted}
-     \end{center}
-\end{column}
-\begin{column}{0.5\textwidth}  %%<--- here
-    \begin{center}
-     \begin{figure}
-     	\centering
-     	\includegraphics[width=0.99\linewidth]{figures/normal}
-     \end{figure}
-      \begin{minted}{pycon}
->>> import random
->>> random.gauss(0, 1)
--0.19223758016631237
-      \end{minted}
-     \end{center}
-\end{column}
-\end{columns}
-\end{frame}
 
-\begin{frame}[fragile]{Sampling PDFs}
-\begin{columns}
-\begin{column}{0.5\textwidth}
-    \begin{center}
-     \begin{figure}
-     	\centering
-     	\includegraphics[width=0.99\linewidth]{figures/uniform_samples}
-     \end{figure}
-     \begin{minted}{pycon}
->>> import random
->>> random.random()
-0.9757805031464292
-     \end{minted}
-     \end{center}
-\end{column}
-\begin{column}{0.5\textwidth}  %%<--- here
-    \begin{center}
-     \begin{figure}
-     	\centering
-     	\includegraphics[width=0.99\linewidth]{figures/normal_samples}
-     \end{figure}
-      \begin{minted}{pycon}
->>> import random
->>> random.gauss(0, 1)
--0.19223758016631237
-      \end{minted}
-     \end{center}
-\end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}[fragile]{Using samples to generate histograms}
-\begin{columns}
-\begin{column}{0.5\textwidth}
-    \begin{center}
-     \begin{figure}
-     	\centering
-     	\includegraphics[width=0.99\linewidth]{figures/uniform_samples_hist}
-     \end{figure}
-     \begin{minted}{pycon}
->>> import random
->>> random.random()
-0.9757805031464292
-     \end{minted}
-     \end{center}
-\end{column}
-\begin{column}{0.5\textwidth}  %%<--- here
-    \begin{center}
-     \begin{figure}
-     	\centering
-     	\includegraphics[width=0.99\linewidth]{figures/normal_samples_hist}
-     \end{figure}
-      \begin{minted}{pycon}
->>> import random
->>> random.gauss(0, 1)
--0.19223758016631237
-      \end{minted}
-     \end{center}
-\end{column}
-\end{columns}
-\end{frame}
-
-\begin{frame}[fragile]{Computing with random variables}
+\begin{frame}[fragile]{Calculation with random variables}
+	What is the distribution of total cost ($Z$) for two independent projects ($X + Y$), when the distribution for each project is known?
     \begin{center}
      \begin{figure}
      	\centering
      	\includegraphics[width=0.99\linewidth]{figures/add_uniform}
      \end{figure}
      \end{center}
-     $10$-percentile \hspace*{1em} $0.1$ \hspace*{5em}  $0.1$ \hspace*{7em} $0.447$ \\
-     $50$-percentile \hspace*{1em} $0.5$ \hspace*{5em}  $0.5$ \hspace*{7em} $1$ \\
-     $90$-percentile \hspace*{1em} $0.9$ \hspace*{5em}  $0.9$ \hspace*{7em} $1.553$
+	 \begin{flalign*}
+     &\hspace*{1em} P10_X = 0.10 \hspace*{4em} P10_Y = 0.10 \hspace*{4em}  P10_Z = ? \\
+	 &\hspace*{1em} E(X) = 0.50 \hspace*{4em}  E(Y) = 0.50 \hspace*{4em}  E(Z)= ? \\
+     &\hspace*{1em} P90_X = 0.10 \hspace*{4em} P90_Y = 0.10 \hspace*{4em}  P90_Z = ? \\
+	\end{flalign*}
+\end{frame}
+
+\begin{frame}[fragile]{Calculation with random variables}
+	What is the distribution of total cost ($Z$) for two independent projects ($X + Y$), when the distribution for each project is known?
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/add_uniform}
+     \end{figure}
+     \end{center}
+	 \begin{flalign*}
+     	&\hspace*{1em} P10_X = 0.10 \hspace*{4em} P10_Y = 0.10 \hspace*{4em}  P10_Z = 0.45 \\
+	 	&\hspace*{1em} E(X) = 0.50 \hspace*{4em}  E(Y) = 0.50 \hspace*{4em}   E(Z)= 1.00 \\
+     	&\hspace*{1em} P90_X = 0.10 \hspace*{4em} P90_Y = 0.10 \hspace*{4em}  P90_Z = 1.55 \\
+	\end{flalign*}
 \end{frame}
 
 \begin{frame}[fragile]{Computational Rules}
@@ -376,8 +312,8 @@
 			& E(XY) = E(X)E(Y) \hspace*{1em} \text{if $X$ and $Y$ are independent} \\
 			& E(XY) \neq E(X)E(Y) \hspace*{1em} \text{if $X$ and $Y$ are dependent}
 	\end{flalign*}
-	Variance:
 
+	Variance:
 		\begin{align*}
 			& Var(a + bX) = b^{2}Var(X) \\
 			& Var(X + Y) = Var(X) + Var(Y) + 2Cov(X,Y) \\
@@ -399,10 +335,10 @@
 
 	\begin{frame}[fragile]{Statistical Concepts}
 		\begin{easylist}[itemize]
-			#	\textbf{Probability} 
-			#	\textbf{Random Variables} 
+			#	\textbf{Probabilities, Random Variables and Distributions} 
 			#	\textbf{PDF and CDF}
 			#	\textbf{Mean, Median, Most Likely and Percentiles}
+			#   \textbf{Dependency}
 			#   \textbf{Computational Rules}
 		\end{easylist}
 	\end{frame}
@@ -413,6 +349,69 @@
 % ==================================================================
 % ==================================================================
 \section{Monte Carlo Simulation}
+
+\begin{frame}[fragile]{Sampling PDFs}
+	\begin{columns}
+	\begin{column}{0.5\textwidth}
+		\begin{center}
+		 \begin{figure}
+			 \centering
+			 \includegraphics[width=0.99\linewidth]{figures/uniform_samples}
+		 \end{figure}
+		 \begin{minted}{pycon}
+	>>> import random
+	>>> random.random()
+	0.9757805031464292
+		 \end{minted}
+		 \end{center}
+	\end{column}
+	\begin{column}{0.5\textwidth}  %%<--- here
+		\begin{center}
+		 \begin{figure}
+			 \centering
+			 \includegraphics[width=0.99\linewidth]{figures/normal_samples}
+		 \end{figure}
+		  \begin{minted}{pycon}
+	>>> import random
+	>>> random.gauss(0, 1)
+	-0.19223758016631237
+		  \end{minted}
+		 \end{center}
+	\end{column}
+	\end{columns}
+\end{frame}
+	
+	\begin{frame}[fragile]{Using samples to generate histograms}
+	\begin{columns}
+	\begin{column}{0.5\textwidth}
+		\begin{center}
+		 \begin{figure}
+			 \centering
+			 \includegraphics[width=0.99\linewidth]{figures/uniform_samples_hist}
+		 \end{figure}
+		 \begin{minted}{pycon}
+	>>> import random
+	>>> random.random()
+	0.9757805031464292
+		 \end{minted}
+		 \end{center}
+	\end{column}
+	\begin{column}{0.5\textwidth}  %%<--- here
+		\begin{center}
+		 \begin{figure}
+			 \centering
+			 \includegraphics[width=0.99\linewidth]{figures/normal_samples_hist}
+		 \end{figure}
+		  \begin{minted}{pycon}
+	>>> import random
+	>>> random.gauss(0, 1)
+	-0.19223758016631237
+		  \end{minted}
+		 \end{center}
+	\end{column}
+	\end{columns}
+\end{frame}
+	
 
 \begin{frame}[fragile]{Cannonball}
 \vspace*{-1em}

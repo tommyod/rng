@@ -17,7 +17,11 @@
 import matplotlib as mpl
 
 # update matplotlibrc
-# mpl.rcParams["font.family"] = "Open Sans"
+mpl.rcParams["font.family"] = "Open Sans"
+
+# %%
+# Needed to delete the fontlist*.json for matplotlib to update font cache
+print(mpl.get_cachedir())
 
 # %%
 import matplotlib.pyplot as plt
@@ -43,61 +47,93 @@ random.gauss(0, 1)
 SAVE_DIR = os.path.join("..", "presentation", "figures")
 
 # %% [markdown]
-# # Knut's figures - adding distributions
+# # Knut's figures
 
 # %%
-rv = stats.lognorm(s=1, loc=1.5, scale=3)
-
-print(rv.ppf(0.1), rv.ppf(0.5), rv.ppf(0.9))
-mode, _ = stats.mode(rv.rvs(10000))
-
-print(mode, rv.ppf(0.5), rv.mean())
-
-# %%
-fig, ax = plt.subplots(1, 1, figsize=(8, 4))
-
-fig.title = '12 1/4 drilling time"'
+rv = stats.lognorm(s=1, loc=1.5, scale=2.5)
 x = np.linspace(0, rv.ppf(0.99), 2**10)
+mode = x[np.argmax(rv.pdf(x))]
+print(f"Mode={mode}  P50={rv.ppf(0.5)}  Mean={rv.mean()}")
+print(f"P10={rv.ppf(0.1)}  P50={rv.ppf(0.5)}  P90={rv.ppf(0.9)}")
+
+# %%
+fig, ax = plt.subplots(1, 1, figsize=(4, 3))
+
+ax.set_title('12 ¼" drilling days')
 ax.plot(x, rv.pdf(x))
 ax.set_xlim([0, 18])
-ax.set_ylim([-0.003, 0.25])
-# ax.hist(days, bins="auto", density=True, zorder=0)
+#ax.set_ylim([0, 0.25])
 
-plt.arrow(rv.ppf(0.5), rv.pdf(rv.ppf(0.5)), 0, -rv.pdf(rv.ppf(0.5)), length_includes_head=True)
-plt.arrow(rv.mean(), rv.pdf(rv.mean()), 0, -rv.pdf(rv.mean()), length_includes_head=True)
-
-# mode, _ = stats.mode(rv.rvs(10000))
-mode = 2.6
-
-plt.arrow(mode, rv.pdf(mode), 0.0, -rv.pdf(mode), length_includes_head=True)
-
+mode = x[np.argmax(rv.pdf(x))]
+plt.plot([mode, mode], [0, rv.pdf(mode)], label=f"Mode = {np.round(mode, 2)}")
+plt.plot([rv.ppf(0.5), rv.ppf(0.5)], [0, rv.pdf(rv.ppf(0.5))], label=f"Median = {rv.ppf(0.5)}")
+plt.plot([rv.mean(), rv.mean()], [0, rv.pdf(rv.mean())], label=f"Mean = {np.round(rv.mean(), 2)}")
+plt.legend()
 
 fig.tight_layout()
-
-print(f"Mode={mode}  P50={rv.ppf(0.5)}  Mean={rv.mean()}")
-
 fig.savefig(os.path.join(SAVE_DIR, "lognorm_pdf.pdf"))
 
 # %%
-fig, ax = plt.subplots(1, 1, figsize=(8, 4))
+fig, ax = plt.subplots(1, 1, figsize=(4, 3))
 
-x = np.linspace(0, rv.ppf(0.99), 2**10)
-ax.plot(x, rv.cdf(x))
+ax.set_title('12 ¼" drilling days')
+ax.set_yticks([0.1, 0.5, 0.9, 1.0])
+ax.plot(x, rv.cdf(x), linewidth=3)
 ax.set_xlim([0, 18])
 ax.set_ylim([0, 1])
 
 for  p in [0.1, 0.5, 0.9]:
-    plt.arrow(rv.ppf(p), rv.cdf(rv.ppf(p)), 0, -rv.cdf(rv.ppf(p)), length_includes_head=True)
-    plt.arrow(0, p, rv.ppf(p), 0, length_includes_head=True)
+    plt.arrow(0, p, rv.ppf(p), 0, length_includes_head=True, head_width=0.04, head_length=0.5, zorder=10)
+    plt.plot([rv.ppf(p), rv.ppf(p)], [0, rv.cdf(rv.ppf(p))], label=f"P{int(p*100)} = {np.round(rv.ppf(p), 2)}")
+
+plt.legend()
 
 fig.tight_layout()
-
-print(f"P10={rv.ppf(0.1)}  P50={rv.ppf(0.5)}  P90={rv.ppf(0.9)}")
-
 fig.savefig(os.path.join(SAVE_DIR, "lognorm_cdf.pdf"))
 
 # %%
-# Knuts earlier figures
+fig, ax = plt.subplots(1, 1, figsize=(6, 3))
+
+
+ax.set_title('12 ¼" drilling days')
+x = np.linspace(0, rv.ppf(0.99), 2**10)
+ax.set_yticks([0.1, 0.5, 0.9, 1.0])
+ax.plot(x, rv.cdf(x), linewidth=3)
+ax.set_xlim([0, 18])
+ax.set_ylim([0, 1])
+
+for  p in [0.1, 0.5, 0.9]:
+    plt.arrow(0, p, rv.ppf(p), 0, length_includes_head=True, head_width=0.03, head_length=0.5, zorder=10)
+    plt.plot([rv.ppf(p), rv.ppf(p)], [0, rv.cdf(rv.ppf(p))], label=f"P{int(p*100)} = {np.round(rv.ppf(p), 2)}")
+
+plt.legend()
+
+
+# %%
+names = ["Normal", "Lognormal", "Triangular"]
+distributions = [
+    stats.norm(2),
+    stats.lognorm(s=1, loc=0, scale=3),
+    stats.triang(loc=0, scale=2, c=0.3)
+]
+
+fig, axes = plt.subplots(1, 3, figsize=(8, 1.5))
+
+for ax, rv, name in zip(axes, distributions, names):
+    ax.set_title(name)
+    x = np.linspace(rv.ppf(0.01), rv.ppf(0.99), 2**10)
+    ax.plot(x, rv.pdf(x), c=COLORS[0])
+    ax2 = ax.twinx()
+    ax2.plot(x, rv.cdf(x), c=COLORS[1])
+    
+    ax.set_ylabel('PDF', color=COLORS[0])
+    ax2.set_ylabel('CDF', color=COLORS[1])
+
+fig.tight_layout()
+fig.savefig(os.path.join(SAVE_DIR, "pdfs_cdfs.pdf"))
+
+# %%
+# Add uniform distributions
 
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
@@ -110,6 +146,10 @@ for ax in axs:
     ax.yaxis.set_major_locator(plt.FixedLocator([0, 0.5, 1]))
     ax.set_xticks([0, 1, 2])
 
+axs[0].set_title("X")
+axs[1].set_title("Y")
+axs[2].set_title("Z")
+
 axs[0].fill_between([0, 1], 0, 1, color=COLORS[0], edgecolor='black')
 axs[1].fill_between([0, 1], 0, 1, color=COLORS[1], edgecolor='black' )
 
@@ -119,7 +159,6 @@ axs[2].add_patch(PathPatch(Path(vertices, codes), facecolor=COLORS[2], edgecolor
 
 fig.tight_layout()
 fig.subplots_adjust(wspace=0.2)
-
 
 fig.savefig(os.path.join(SAVE_DIR, "add_uniform.pdf"))
 
