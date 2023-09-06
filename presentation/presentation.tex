@@ -181,20 +181,6 @@
 	\end{easylist}
 \end{frame}
 
-\begin{frame}[fragile]{Agenda}
-	\begin{easylist}[itemize]
-		# \textbf{Statistical Concepts}: 
-		##	\textbf{Probability} 
-		##	\textbf{Random Variables} 
-		##	\textbf{PDF and CDF}
-		##	\textbf{Mean, Median, Most Likely and Percentiles}
-		##	\textbf{Computing with Random Variables}
-		# \textbf{Monte Carlo Simulation}: 
-		# \textbf{Resampling}: 
-		# \textbf{Stochastic Search}: 
-		# \textbf{Bayesian Statistics}: 
-	\end{easylist}
-\end{frame}
 
 % ==================================================================
 % ==================================================================
@@ -228,12 +214,55 @@
 	\begin{easylist}[itemize]
 		# \textbf{Discrete}
 		# \textbf{Continious}
-			\end{easylist}
+	\end{easylist}
 \end{frame}
 
+\begin{frame}
+\begin{columns}
+	\begin{column}{0.5\textwidth}
+		\begin{easylist}[itemize]
+			# Cumulative Distribution Function (CDF)
+			## Center of gravety of the density
 
+			# Percentiles
+			##  $P_{xx}$ in a distribution is the value such that the probability is $xx$ \% to obtain values $P_{xx}$
+			## Note! The opposite definition is also frequently used!
+			
+		\end{easylist}
+	\end{column}
+	\begin{column}{0.5\textwidth}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.99\linewidth]{figures/lognorm_cdf}
+		\end{figure}
+	\end{column}
+\end{columns}
+\end{frame}
 
-
+\begin{frame}
+	\begin{columns}
+		\begin{column}{0.5\textwidth}
+			Expected value (Mean):
+			Center of gravety of the density
+			\begin{equation*}
+				\mu = E(X) = \\
+			\end{equation*}
+			Median (P50): Same probability above and below
+	
+			Mode: Most likely value
+	
+			In a symetric distribution all three coincide
+		\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{figure}
+				\centering
+				\includegraphics[width=0.99\linewidth]{figures/lognorm_pdf}
+			\end{figure}
+		\end{column}
+	\end{columns}
+	\end{frame}
+	
+	
 \begin{frame}[fragile]{Probability Density Functions (PDFs)}
 \begin{columns}
 \begin{column}{0.5\textwidth}
@@ -367,6 +396,17 @@
 		\end{tikzpicture}
 	}
 	\end{frame}
+
+	\begin{frame}[fragile]{Statistical Concepts}
+		\begin{easylist}[itemize]
+			#	\textbf{Probability} 
+			#	\textbf{Random Variables} 
+			#	\textbf{PDF and CDF}
+			#	\textbf{Mean, Median, Most Likely and Percentiles}
+			#   \textbf{Computational Rules}
+		\end{easylist}
+	\end{frame}
+	
 
 
 % ==================================================================
