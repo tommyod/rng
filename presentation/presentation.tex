@@ -794,13 +794,78 @@ Place 25 windmills on the acreage, so as to minimize \\
 \end{frame}
 
 
+\begin{frame}[fragile]{Pupil-classroom assignments}
+\vspace*{-1em}
+\begin{center}
+Assume that students write a list of their top-$3$ desired classmates \\
+\vspace*{2em} 
+Place 100 pupils in 5 groups of 20, so that \\
+(1) the average student is as happy as possible and \\
+(2) the least happy student is as happy as possible
+\vspace*{1em} 
+\begin{equation*}
+\binom{100}{20}
+\binom{80}{20}
+\binom{60}{20}
+\binom{40}{20}
+\binom{20}{20}
+\frac{1}{5!} \approx 4.496 \times 10^{18}
+\end{equation*}
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Pupil-classroom assignments}
+\vspace*{-1.5em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.6\linewidth]{figures/classroom_matrix_structures.pdf}
+ \end{figure}
+ \end{center}
+\vspace*{-2em}
+\begin{center}
+Here's a problem instance with a known best solution
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Pupil-classroom assignments}
+\vspace*{-1.5em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/classroom_sim_annealing.pdf}
+ \end{figure}
+ \end{center}
+\vspace*{-2em}
+\begin{center}
+Swap two pupils at random, then re-evaluate
+\end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Pupil-classroom assignments}
+\vspace*{-1.5em}
+\begin{center}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/classroom_convergence.pdf}
+ \end{figure}
+ \end{center}
+\vspace*{-2em}
+\begin{center}
+Problem solved to optimality in $\sim 1$ second
+\end{center}
+\end{frame}
+
+
 \begin{frame}[fragile]{Stochastic search}
 	\begin{easylist}[itemize]
 		# For combinatorial problems with non-linear objectives
 		# In its simplest form: try, evaluate, try again
 		## More advanced: simulated annealing
 		% # Constraints may be softened and put into the objective
-		# You need: a way to generate solutions, objective to evaluate
+		# You need: 
+		## a way to generate/modify solutions
+		## an objective to evaluate
 		# Beware:
 		## If the objective has simple form, exploit it (MIP)
 		## No guarantees of optimal solution, it's a heuristic only
