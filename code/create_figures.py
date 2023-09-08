@@ -62,7 +62,7 @@ fig, ax = plt.subplots(1, 1, figsize=(4, 3))
 ax.set_title('12 ¼" drilling days')
 ax.plot(x, rv.pdf(x))
 ax.set_xlim([0, 18])
-#ax.set_ylim([0, 0.25])
+ax.set_ylim([0, 0.3])
 
 mode = x[np.argmax(rv.pdf(x))]
 plt.plot([mode, mode], [0, rv.pdf(mode)], label=f"Mode = {np.round(mode, 2)}")
@@ -138,23 +138,26 @@ fig.savefig(os.path.join(SAVE_DIR, "pdfs_cdfs.pdf"))
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 
-fig, axs = plt.subplots(1, 3, figsize=(8, 2), sharex=True, sharey=True)
+fig, axs = plt.subplots(1, 3, figsize=(8, 2), sharey=True)
 
 for ax in axs:
     ax.set_ylim([0, 1.1])
-    ax.set_xlim([-0.1, 2.1])
+    ax.set_xlim([0.9, 3.1])
     ax.yaxis.set_major_locator(plt.FixedLocator([0, 0.5, 1]))
-    ax.set_xticks([0, 1, 2])
+    ax.set_xticks([1, 2, 3])
 
 axs[0].set_title("X")
 axs[1].set_title("Y")
 axs[2].set_title("Z")
 
-axs[0].fill_between([0, 1], 0, 1, color=COLORS[0], edgecolor='black')
-axs[1].fill_between([0, 1], 0, 1, color=COLORS[1], edgecolor='black' )
+axs[2].set_xlim([1.9, 4.1])
+axs[2].set_xticks([2, 3, 4])
+
+axs[0].fill_between([1, 2], 0, 1, color=COLORS[0], edgecolor='black')
+axs[1].fill_between([1, 2], 0, 1, color=COLORS[1], edgecolor='black' )
 
 codes = [Path.MOVETO] + [Path.LINETO]*2 + [Path.CLOSEPOLY]
-vertices = [(0, 0), (1, 1), (2, 0), (0, 0)]
+vertices = [(2, 0), (3, 1), (4, 0), (2, 0)]
 axs[2].add_patch(PathPatch(Path(vertices, codes), facecolor=COLORS[2], edgecolor='black'))
 
 fig.tight_layout()
@@ -163,13 +166,38 @@ fig.subplots_adjust(wspace=0.2)
 fig.savefig(os.path.join(SAVE_DIR, "add_uniform.pdf"))
 
 # %%
-uniform = stats.uniform()
-triangular = stats.triang(loc=0, scale=2, c=0.5) # Sum of two uniforms
+# How I should have done it:
+names = ["X", "Y", "Z"]
+distributions = [
+    stats.uniform(loc=1),
+    stats.uniform(loc=1),
+    stats.triang(loc=2, scale=2, c=0.5)
+]
+
+fig, axes = plt.subplots(1, 3, figsize=(8, 2), sharey=True)
+
+for ax, rv, name, color in zip(axes, distributions, names, COLORS):
+    ax.set_title(name)
+    ax.set_ylim([0, 1.1])
+    ax.set_xlim([rv.ppf(0), rv.ppf(1)])
+    # ax.yaxis.set_major_locator(plt.FixedLocator([0, 0.5, 1]))
+    # ax.set_xticks([1, 2, 3, 4])
+    x = np.linspace(rv.ppf(0), rv.ppf(1), 2**10)
+    ax.plot(x, rv.pdf(x), c=color)
+    
+fig.tight_layout()
+
+
+# %%
+uniform = stats.uniform(loc=1)
+triangular = stats.triang(loc=1, scale=2, c=0.5) # Sum of two uniforms
 
 print(uniform.ppf(0.1), triangular.ppf(0.1))
-print(uniform.ppf(0.5), triangular.ppf(0.5))
+print(uniform.mean(), triangular.mean())
 print(uniform.ppf(0.9), triangular.ppf(0.9))
 
+
+# %%
 
 # %% [markdown]
 # # General figures
