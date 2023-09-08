@@ -28,6 +28,7 @@ import matplotlib.pyplot as plt
 import os
 import numpy as np
 import scipy as sp
+import pandas as pd
 from scipy import stats
 
 COLORS = plt.rcParams['axes.prop_cycle'].by_key()['color']
@@ -198,6 +199,52 @@ print(uniform.ppf(0.9), triangular.ppf(0.9))
 
 
 # %%
+from IPython.display import display, HTML
+
+
+fig, axs = plt.subplots(1, 3, figsize=(8, 2), sharex=True, sharey=True)
+
+samples1 = stats.uniform(loc=0, scale=1).rvs(1000)
+samples2 = stats.uniform(loc=0, scale=1).rvs(1000)
+samples_sum = samples1 + samples2
+
+for ax, samples, color in zip(axs, [samples1, samples2, samples_sum], COLORS):
+    ax.hist(samples, bins="fd", color=color, density=True)
+    ax.scatter(
+        samples,
+        np.ones_like(samples) * stats.uniform().rvs(len(samples), random_state=1) * 0.3
+        + 0.02,
+        color="black",
+        s=1,
+    )
+
+    ax.set_ylim([0, 1.1])
+    ax.set_xlim([-0.1, 2.1])
+    ax.yaxis.set_major_locator(plt.FixedLocator([0, 0.5, 1]))
+    ax.set_xticks([0, 1, 2])
+
+    # Show percentiles
+    display(
+        pd.Series(samples, name="samples")
+        .describe(percentiles=[0.1, 0.25, 0.5, 0.75, 0.9])
+        .to_frame()
+        .T
+    )
+
+
+# Add black distribution outlines
+axs[0].fill_between([0, 1], 0, 1, color="none", edgecolor="black")
+axs[1].fill_between([0, 1], 0, 1, color="none", edgecolor="black")
+
+codes = [Path.MOVETO] + [Path.LINETO] * 2 + [Path.CLOSEPOLY]
+vertices = [(0, 0), (1, 1), (2, 0), (0, 0)]
+axs[2].add_patch(PathPatch(Path(vertices, codes), facecolor="none", edgecolor="black"))
+
+fig.tight_layout()
+fig.subplots_adjust(wspace=0.2)
+
+
+fig.savefig(os.path.join(SAVE_DIR, "add_uniform_samples.pdf"))
 
 # %% [markdown]
 # # General figures
