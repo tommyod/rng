@@ -6,9 +6,9 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.14.6
+#       jupytext_version: 1.14.5
 #   kernelspec:
-#     display_name: Python 3 (ipykernel)
+#     display_name: Python 3
 #     language: python
 #     name: python3
 # ---
@@ -100,7 +100,7 @@ fig.savefig(os.path.join(SAVE_DIR, "lognorm_cdf.pdf"))
 names = ["Normal", "Lognormal", "Triangular"]
 distributions = [
     stats.norm(2),
-    stats.lognorm(s=1, loc=0, scale=3),
+    stats.lognorm(s=0.55, loc=0, scale=3),
     stats.triang(loc=0, scale=2, c=0.3)
 ]
 
@@ -108,7 +108,7 @@ fig, axes = plt.subplots(1, 3, figsize=(8, 1.5))
 
 for ax, rv, name in zip(axes, distributions, names):
     ax.set_title(name)
-    x = np.linspace(rv.ppf(0.01), rv.ppf(0.99), 2**10)
+    x = np.linspace(rv.ppf(0.001), rv.ppf(0.999), 2**10)
     ax.plot(x, rv.pdf(x), c=COLORS[0])
     ax2 = ax.twinx()
     ax2.plot(x, rv.cdf(x), c=COLORS[1])
@@ -166,7 +166,7 @@ fig.tight_layout()
 
 # %%
 uniform = stats.uniform(loc=1)
-triangular = stats.triang(loc=1, scale=2, c=0.5) # Sum of two uniforms
+triangular = stats.triang(loc=2, scale=2, c=0.5) # Sum of two uniforms
 
 print(uniform.ppf(0.1), triangular.ppf(0.1))
 print(uniform.mean(), triangular.mean())
