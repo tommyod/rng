@@ -60,10 +60,12 @@ print(f"P10={rv.ppf(0.1)}  P50={rv.ppf(0.5)}  P90={rv.ppf(0.9)}")
 # %%
 fig, ax = plt.subplots(1, 1, figsize=(4, 3))
 
-ax.set_title('12 ¼" drilling days')
+ax.set_title('12 ¼" drilling')
 ax.plot(x, rv.pdf(x))
 ax.set_xlim([0, 18])
 ax.set_ylim([0, 0.3])
+ax.set_xlabel("days")
+ax.set_ylabel("probability density")
 
 mode = x[np.argmax(rv.pdf(x))]
 plt.plot([mode, mode], [0, rv.pdf(mode)], label=f"Mode = {np.round(mode, 2)}")
@@ -77,11 +79,13 @@ fig.savefig(os.path.join(SAVE_DIR, "lognorm_pdf.pdf"))
 # %%
 fig, ax = plt.subplots(1, 1, figsize=(4, 3))
 
-ax.set_title('12 ¼" drilling days')
+ax.set_title('12 ¼" drilling')
 ax.set_yticks([0.1, 0.5, 0.9, 1.0])
 ax.plot(x, rv.cdf(x), linewidth=3)
 ax.set_xlim([0, 18])
 ax.set_ylim([0, 1])
+ax.set_xlabel("days")
+ax.set_ylabel("cumulative probability")
 
 for  p in [0.1, 0.5, 0.9]:
     plt.arrow(0, p, rv.ppf(p), 0, length_includes_head=True, head_width=0.04, head_length=0.5, zorder=10)
@@ -91,24 +95,6 @@ plt.legend()
 
 fig.tight_layout()
 fig.savefig(os.path.join(SAVE_DIR, "lognorm_cdf.pdf"))
-
-# %%
-fig, ax = plt.subplots(1, 1, figsize=(6, 3))
-
-
-ax.set_title('12 ¼" drilling days')
-x = np.linspace(0, rv.ppf(0.99), 2**10)
-ax.set_yticks([0.1, 0.5, 0.9, 1.0])
-ax.plot(x, rv.cdf(x), linewidth=3)
-ax.set_xlim([0, 18])
-ax.set_ylim([0, 1])
-
-for  p in [0.1, 0.5, 0.9]:
-    plt.arrow(0, p, rv.ppf(p), 0, length_includes_head=True, head_width=0.03, head_length=0.5, zorder=10)
-    plt.plot([rv.ppf(p), rv.ppf(p)], [0, rv.cdf(rv.ppf(p))], label=f"P{int(p*100)} = {np.round(rv.ppf(p), 2)}")
-
-plt.legend()
-
 
 # %%
 names = ["Normal", "Lognormal", "Triangular"]
@@ -139,20 +125,13 @@ fig.savefig(os.path.join(SAVE_DIR, "pdfs_cdfs.pdf"))
 from matplotlib.path import Path
 from matplotlib.patches import PathPatch
 
-fig, axs = plt.subplots(1, 3, figsize=(8, 2), sharey=True)
+names = ["X", "Y", "Z"]
 
-for ax in axs:
-    ax.set_ylim([0, 1.1])
-    ax.set_xlim([0.9, 3.1])
-    ax.yaxis.set_major_locator(plt.FixedLocator([0, 0.5, 1]))
-    ax.set_xticks([1, 2, 3])
+fig, axs = plt.subplots(1, 3, figsize=(8, 2), sharex=True, sharey=True)
 
-axs[0].set_title("X")
-axs[1].set_title("Y")
-axs[2].set_title("Z")
-
-axs[2].set_xlim([1.9, 4.1])
-axs[2].set_xticks([2, 3, 4])
+for ax, name in zip(axs, names):
+    ax.set_ylim([0, 1.3])
+    ax.set_title(name)
 
 axs[0].fill_between([1, 2], 0, 1, color=COLORS[0], edgecolor='black')
 axs[1].fill_between([1, 2], 0, 1, color=COLORS[1], edgecolor='black' )
@@ -175,19 +154,15 @@ distributions = [
     stats.triang(loc=2, scale=2, c=0.5)
 ]
 
-fig, axes = plt.subplots(1, 3, figsize=(8, 2), sharey=True)
+fig, axes = plt.subplots(1, 3, figsize=(8, 2), sharex=True, sharey=True)
 
 for ax, rv, name, color in zip(axes, distributions, names, COLORS):
     ax.set_title(name)
-    ax.set_ylim([0, 1.1])
-    ax.set_xlim([rv.ppf(0), rv.ppf(1)])
-    # ax.yaxis.set_major_locator(plt.FixedLocator([0, 0.5, 1]))
-    # ax.set_xticks([1, 2, 3, 4])
-    x = np.linspace(rv.ppf(0), rv.ppf(1), 2**10)
-    ax.plot(x, rv.pdf(x), c=color)
+    ax.set_ylim([0, 1.3])
+    x = np.linspace(rv.ppf(0)-0.01, rv.ppf(1)+0.01, 2**10)
+    ax.fill_between(x, np.zeros_like(x), rv.pdf(x), color=color, edgecolor='black' )
     
 fig.tight_layout()
-
 
 # %%
 uniform = stats.uniform(loc=1)
@@ -199,30 +174,37 @@ print(uniform.ppf(0.9), triangular.ppf(0.9))
 
 
 # %%
-from IPython.display import display, HTML
+# Add uniform by sampling
+names = ["X", "Y", "Z"]
+distributions = [
+    stats.uniform(loc=1),
+    stats.uniform(loc=1),
+    stats.triang(loc=2, scale=2, c=0.5)
+]
+samples = [
+    stats.uniform(loc=1, scale=1).rvs(1000),
+    stats.uniform(loc=1, scale=1).rvs(1000),
+]
+samples.append(samples[0]+samples[1])
 
+N_DOTS=250
 
-fig, axs = plt.subplots(1, 3, figsize=(8, 2), sharex=True, sharey=True)
+fig, axes = plt.subplots(1, 3, figsize=(8, 2), sharex=True, sharey=True)
 
-samples1 = stats.uniform(loc=0, scale=1).rvs(1000)
-samples2 = stats.uniform(loc=0, scale=1).rvs(1000)
-samples_sum = samples1 + samples2
-
-for ax, samples, color in zip(axs, [samples1, samples2, samples_sum], COLORS):
+for ax, rv, samples, name, color in zip(axes, distributions, samples, names, COLORS):
     ax.hist(samples, bins="fd", color=color, density=True)
     ax.scatter(
-        samples,
-        np.ones_like(samples) * stats.uniform().rvs(len(samples), random_state=1) * 0.3
+        samples[0:N_DOTS],
+        stats.uniform().rvs(len(samples[0:N_DOTS]), random_state=1) * 0.3
         + 0.02,
         color="black",
         s=1,
     )
-
-    ax.set_ylim([0, 1.1])
-    ax.set_xlim([-0.1, 2.1])
-    ax.yaxis.set_major_locator(plt.FixedLocator([0, 0.5, 1]))
-    ax.set_xticks([0, 1, 2])
-
+    ax.set_title(name)
+    ax.set_ylim([0, 1.3])
+    x = np.linspace(rv.ppf(0)-0.01, rv.ppf(1)+0.01, 2**10)
+    ax.plot(x, rv.pdf(x), c="black")
+    
     # Show percentiles
     display(
         pd.Series(samples, name="samples")
@@ -230,21 +212,10 @@ for ax, samples, color in zip(axs, [samples1, samples2, samples_sum], COLORS):
         .to_frame()
         .T
     )
-
-
-# Add black distribution outlines
-axs[0].fill_between([0, 1], 0, 1, color="none", edgecolor="black")
-axs[1].fill_between([0, 1], 0, 1, color="none", edgecolor="black")
-
-codes = [Path.MOVETO] + [Path.LINETO] * 2 + [Path.CLOSEPOLY]
-vertices = [(0, 0), (1, 1), (2, 0), (0, 0)]
-axs[2].add_patch(PathPatch(Path(vertices, codes), facecolor="none", edgecolor="black"))
-
+    
 fig.tight_layout()
-fig.subplots_adjust(wspace=0.2)
-
-
 fig.savefig(os.path.join(SAVE_DIR, "add_uniform_samples.pdf"))
+
 
 # %% [markdown]
 # # General figures

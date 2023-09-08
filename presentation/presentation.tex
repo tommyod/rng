@@ -223,8 +223,38 @@
 		\centering
 		\includegraphics[width=0.99\linewidth]{figures/pdfs_cdfs}
 	\end{figure}
-
 \end{frame}
+
+\begin{frame}[fragile]{Probability Density Functions (PDFs)}
+	\begin{columns}
+	\begin{column}{0.5\textwidth}
+		\begin{center}
+		 \begin{figure}
+			 \centering
+			 \includegraphics[width=0.99\linewidth]{figures/uniform}
+		 \end{figure}
+		 \begin{minted}{pycon}
+	>>> import random
+	>>> random.random()
+	0.9757805031464292
+		 \end{minted}
+		 \end{center}
+	\end{column}
+	\begin{column}{0.5\textwidth}  %%<--- here
+		\begin{center}
+		 \begin{figure}
+			 \centering
+			 \includegraphics[width=0.99\linewidth]{figures/normal}
+		 \end{figure}
+		  \begin{minted}{pycon}
+	>>> import random
+	>>> random.gauss(0, 1)
+	-0.19223758016631237
+		  \end{minted}
+		 \end{center}
+	\end{column}
+	\end{columns}
+	\end{frame}
 
 \begin{frame}[fragile]{Cumulative distribution function (CDF) and Percentiles}
 \begin{columns}
@@ -256,20 +286,22 @@
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
 			\begin{easylist}[itemize]
-			# Expected value (mean): Center of gravity of the density
-			\begin{equation*}
-				\mu = E(X) = \int xg(x)\,dx
-			\end{equation*}
-			# Median (P50): Same area above and below
+			# Expected value (mean): 
+			## weighted average of possible outcomes. Also
+			center of gravity of the density
+
+			# Median (P50): 
+			## same area above and below
 	
-			# Mode: Most likely value
-	
+			# Most likely value (mode): 
+			## maximum of the PDF
+
 			# In a symmetric distribution all three coincide
 			\end{easylist}
 		\end{column}
 		\begin{column}{0.5\textwidth}
 			\begin{figure}
-				\centering
+				%\centering
 				\includegraphics[width=0.99\linewidth]{figures/lognorm_pdf}
 			\end{figure}
 		\end{column}
@@ -286,13 +318,14 @@
      \end{figure}
      \end{center}
 	 \begin{flalign*}
-     &\hspace*{1em} P10_X = 0.10 \hspace*{4em} P10_Y = 0.10 \hspace*{4em}  P10_Z = ? \\
-	 &\hspace*{1em} E(X) = 0.50 \hspace*{4em}  E(Y) = 0.50 \hspace*{4em}  E(Z)= ? \\
-     &\hspace*{1em} P90_X = 0.10 \hspace*{4em} P90_Y = 0.10 \hspace*{4em}  P90_Z = ? \\
+     &\hspace*{1em} P10_X = 1.1 \hspace*{4em} P10_Y = 1.1 \hspace*{4em}  P10_Z = ? \\
+	 &\hspace*{1em} E(X) = 1.5  \hspace*{4.2em} E(Y) = 1.5  \hspace*{4.3em}  E(Z)= ? \\
+     &\hspace*{1em} P90_X = 1.9 \hspace*{4em} P90_Y = 1.9 \hspace*{4em}  P90_Z = ? \\
 	\end{flalign*}
 \end{frame}
 
 \begin{frame}[fragile]{Calculation with random variables}
+	What is the distribution of total time ($Z$) for two independent tasks ($X + Y$), when the distribution for each task is known?
     \begin{center}
      \begin{figure}
      	\centering
@@ -300,48 +333,45 @@
      \end{figure}
      \end{center}
 	 \begin{flalign*}
-     	&\hspace*{1em} P10_X = 1.10 \hspace*{4em} P10_Y = 1.10 \hspace*{4em}  P10_Z = 1.45 \\
-	 	&\hspace*{1em} E(X) = 1.50 \hspace*{4em}  E(Y) = 1.50 \hspace*{4em}   E(Z)= 2.00 \\
-     	&\hspace*{1em} P90_X = 1.90 \hspace*{4em} P90_Y = 1.10 \hspace*{4em}  P90_Z = 2.55 \\
+     	&\hspace*{1em} P10_X = 1.1 \hspace*{4em} P10_Y = 1.1 \hspace*{4em}  P10_Z = 1.45 \\
+	 	&\hspace*{1em} E(X) = 1.5  \hspace*{4.2em} E(Y) = 1.5  \hspace*{4.3em}  E(Z)= 3 \\
+     	&\hspace*{1em} P90_X = 1.9 \hspace*{4em} P90_Y = 1.9 \hspace*{4em}  P90_Z = 2.55 \\
 	\end{flalign*}
 \end{frame}
 
 \begin{frame}[fragile]{Computational Rules}
 	Mean (expected value):
 	\begin{flalign*}
-			& E(a + bX) = a + bE(X) \\
-			& E(X + Y) = E(X) + E(Y) \\
-			& E(XY) = E(X)E(Y) \hspace*{1em} \text{if $X$ and $Y$ are independent} \\
-			& E(XY) \neq E(X)E(Y) \hspace*{1em} \text{if $X$ and $Y$ are dependent}
+		& E(a + bX) = a + bE(X) \\
+		& E(X + Y) = E(X) + E(Y) \\
+		& E(XY) = E(X)E(Y) \hspace*{1em} \text{if $X$ and $Y$ are independent} \\
+		& E(XY) \neq E(X)E(Y) \hspace*{1em} \text{if $X$ and $Y$ are dependent}
 	\end{flalign*}
 
 	Variance:
-		\begin{align*}
-			& Var(a + bX) = b^{2}Var(X) \\
-			& Var(X + Y) = Var(X) + Var(Y) + 2Cov(X,Y) \\
-			& Var(X - Y) = Var(X) + Var(Y) - 2Cov(X,Y) \\
-		\end{align*}
+	\begin{align*}
+		& Var(a + bX) = b^{2}Var(X) \\
+		& Var(X + Y) = Var(X) + Var(Y) + 2Cov(X,Y) \\
+		& Var(X - Y) = Var(X) + Var(Y) - 2Cov(X,Y) \\
+	\end{align*}
+
 	\onslide<2->{
 		\begin{tikzpicture}[remember picture, overlay]
-			\draw[line width=10pt, red] 
-			  	(current page.north west) -- (current page.south east);
-			\draw[line width=10pt, red] 
-			  	(current page.north east) -- (current page.south west);
+			\draw[line width=8pt, red] (current page.north west) -- (current page.south east);
+			\draw[line width=8pt, red] (current page.north east) -- (current page.south west);
 			% \draw[fill, white](current page.center, current page.center) ;	
 		\end{tikzpicture}
-		\begin{tikzpicture}[remember picture]
-			
-		\end{tikzpicture}
 	}
-	\end{frame}
+\end{frame}
 
-	\begin{frame}[fragile]{Statistical Concepts}
-		\begin{easylist}[itemize]
-			# Four common probability distributions are: uniform, triangular, normal, lognormal
-			# Important properties: the mean, P10, P50 (median), P90
-			# Theoretical rules for manipulating probabilities are difficult
-		\end{easylist}
-	\end{frame}
+\begin{frame}[fragile]{Statistical Concepts}
+	\begin{easylist}[itemize]
+		# To handle uncertainty or risk in a consistent way, some knowledge about probability, PDFs or CDFs are needed
+		# Four common probability distributions are: uniform, triangular, normal, lognormal
+		# Important properties: the mean (expected value), P10, P50 (median), P90
+		# Theoretical rules for manipulating probabilities are difficult
+	\end{easylist}
+\end{frame}
 	
 
 
@@ -349,6 +379,7 @@
 % ==================================================================
 % ==================================================================
 \section{Monte Carlo Simulation}
+
 
 \begin{frame}[fragile]{Sampling PDFs}
 	\begin{columns}
@@ -411,7 +442,19 @@
 	\end{column}
 	\end{columns}
 \end{frame}
-	
+
+\begin{frame}{Monte Carlo Simulation}
+	Total time for our tasks
+	\begin{figure}
+		\includegraphics[width=0.99\linewidth]{figures/add_uniform_samples}
+	\end{figure}
+	% would be cool to get this table generated from our code
+	\begin{flalign*}
+		&\hspace*{1em} P10_x = 1.095 \hspace*{4em} P10_y = 1.108 \hspace*{4em}  P10_z = 2.450 \\
+		&\hspace*{1em} \overline{x} = 1.491 \hspace*{5.5em}  \overline{y} = 1.517 \hspace*{5.9em}   \overline{z}= 3.008 \\
+		&\hspace*{1em} P90_x = 1.900 \hspace*{4em} P90_y = 1.890 \hspace*{4em}  P90_z = 3.594 \\
+   \end{flalign*}
+\end{frame}
 
 \begin{frame}[fragile]{Cannonball}
 \vspace*{-1em}
