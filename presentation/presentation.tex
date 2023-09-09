@@ -154,12 +154,13 @@
 	\vfill
 
 	\vfill
-	{\large  Tommy Odland and Knut Utne Hollund}
+	{\large  \texttt{@tommyod} \texttt{@KnutUH}}
 	\vfill
 	{\small \href{https://github.com/tommyod/rng}{https://github.com/tommyod/rng}}
 
 	\vfill
-	September 15, 2023
+	\today 
+	% September 15, 2023
 	\vfill
 	\end{center}
 \end{frame}
@@ -219,36 +220,6 @@
 	\end{figure}
 \end{frame}
 
-\begin{frame}[fragile]{Probability Density Functions (PDFs)}
-	\begin{columns}
-	\begin{column}{0.5\textwidth}
-		\begin{center}
-		 \begin{figure}
-			 \centering
-			 \includegraphics[width=0.99\linewidth]{figures/uniform}
-		 \end{figure}
-		 \begin{minted}{pycon}
->>> import random
->>> random.random()
-0.9757805031464292
-		 \end{minted}
-		 \end{center}
-	\end{column}
-	\begin{column}{0.5\textwidth}  %%<--- here
-		\begin{center}
-		 \begin{figure}
-			 \centering
-			 \includegraphics[width=0.99\linewidth]{figures/normal}
-		 \end{figure}
-		  \begin{minted}{pycon}
->>> import random
->>> random.gauss(0, 1)
--0.19223758016631237
-		  \end{minted}
-		 \end{center}
-	\end{column}
-	\end{columns}
-	\end{frame}
 
 \begin{frame}[fragile]{Cumulative distribution function (CDF) and Percentiles}
 \begin{columns}
@@ -387,6 +358,37 @@
 % ==================================================================
 % ==================================================================
 \section{Monte Carlo Simulation}
+
+\begin{frame}[fragile]{Probability Density Functions (PDFs)}
+	\begin{columns}
+	\begin{column}{0.5\textwidth}
+		\begin{center}
+		 \begin{figure}
+			 \centering
+			 \includegraphics[width=0.99\linewidth]{figures/uniform}
+		 \end{figure}
+		 \begin{minted}{pycon}
+>>> import random
+>>> random.random()
+0.9757805031464292
+		 \end{minted}
+		 \end{center}
+	\end{column}
+	\begin{column}{0.5\textwidth}  %%<--- here
+		\begin{center}
+		 \begin{figure}
+			 \centering
+			 \includegraphics[width=0.99\linewidth]{figures/normal}
+		 \end{figure}
+		  \begin{minted}{pycon}
+>>> import random
+>>> random.gauss(0, 1)
+-0.19223758016631237
+		  \end{minted}
+		 \end{center}
+	\end{column}
+	\end{columns}
+	\end{frame}
 
 
 \begin{frame}[fragile]{Sampling PDFs}
