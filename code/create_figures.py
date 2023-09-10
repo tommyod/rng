@@ -31,7 +31,7 @@ import scipy as sp
 import pandas as pd
 from scipy import stats
 
-COLORS = plt.rcParams['axes.prop_cycle'].by_key()['color']
+COLORS = plt.rcParams["axes.prop_cycle"].by_key()["color"]
 
 # %matplotlib inline
 
@@ -46,6 +46,185 @@ random.gauss(0, 1)
 
 # %%
 SAVE_DIR = os.path.join("..", "presentation", "figures")
+
+# %% [markdown]
+# # Tommy's intro figures
+
+# %%
+patient_height = np.array(
+    [
+        160,
+        172,
+        167,
+        185,
+        162,
+        163,
+        175,
+        177,
+        185,
+        165,
+        162,
+        182,
+        173,
+        162,
+        167,
+        172,
+        170,
+        177,
+        170,
+        168,
+        163,
+        178,
+        158,
+        182,
+        157,
+        167,
+        160,
+        170,
+        170,
+        160,
+        177,
+        182,
+        166,
+        168,
+        170,
+        155,
+        148,
+        175,
+        175,
+        168,
+        160,
+        180,
+        153,
+        175,
+        185,
+        145,
+        165,
+        170,
+        165,
+        175,
+    ]
+)
+
+# %%
+fig, ax = plt.subplots(1, 1, figsize=(6, 3))
+
+ax.set_title(f"Heights of {len(patient_height)} people")
+
+ax.scatter(
+    patient_height,
+    0.002 + np.zeros_like(patient_height),
+    marker="|",
+    color="black",
+    zorder=15,
+    label="Observed heights",
+    alpha=0.8,
+)
+
+ax.set_ylim([0, 0.055])
+
+ax.legend()
+ax.set_xlabel("Height in centimeters")
+fig.tight_layout()
+fig.savefig(os.path.join(SAVE_DIR, "heights_1.pdf"))
+
+
+ax.hist(patient_height, bins="fd", density=True, zorder=5, label="Histogram")
+ax.legend()
+fig.tight_layout()
+fig.savefig(os.path.join(SAVE_DIR, "heights_2.pdf"))
+
+mu = np.mean(patient_height)
+std = np.std(patient_height, ddof=1)
+print("mean", round(mu, 1))
+print("std", round(std, 1))
+normal = stats.norm(loc=mu, scale=std)
+x = np.linspace(mu - 3 * std, mu + 3 * std, num=2**10)
+ax.plot(x, normal.pdf(x), zorder=20, label="Fitted normal")
+
+ax.legend()
+fig.tight_layout()
+fig.savefig(os.path.join(SAVE_DIR, "heights_3.pdf"))
+
+# %%
+fig, ax = plt.subplots(1, 1, figsize=(6, 3))
+
+ax.set_title(f"Heights of {len(patient_height)} people")
+
+ax.scatter(
+    patient_height,
+    0.002 + np.zeros_like(patient_height),
+    marker="|",
+    color="black",
+    zorder=15,
+    label="Observed heights",
+    alpha=0.8,
+)
+
+ax.legend()
+ax.set_xlabel("Height in centimeters")
+fig.tight_layout()
+fig.savefig(os.path.join(SAVE_DIR, "heights_cumulative_1.pdf"))
+
+
+ax.hist(
+    patient_height,
+    bins=len(patient_height),
+    density=True,
+    zorder=5,
+    label="Cumulative histogram",
+    cumulative=True,
+    histtype="step",
+    fill=True,
+)
+ax.legend()
+ax.grid(True, ls="--", alpha=0.5, zorder=0)
+fig.tight_layout()
+fig.savefig(os.path.join(SAVE_DIR, "heights_cumulative_2.pdf"))
+
+print("Empirical percentiles:", np.percentile(patient_height, q=[10, 50, 90]))
+
+mu = np.mean(patient_height)
+std = np.std(patient_height, ddof=1)
+normal = stats.norm(loc=mu, scale=std)
+x = np.linspace(mu - 3 * std, mu + 3 * std, num=2**10)
+ax.plot(x, normal.cdf(x), zorder=20, label="Cumulative normal")
+print("Normal percentiles:", normal.ppf([0.1, 0.5, 0.9]).round(1))
+
+ax.legend()
+ax.grid(True, ls="--", alpha=0.5, zorder=0)
+fig.tight_layout()
+fig.savefig(os.path.join(SAVE_DIR, "heights_cumulative_3.pdf"))
+
+# %%
+names = ["Normal", "Lognormal", "Uniform", "Triangular"]
+distributions = [
+    stats.norm(2),
+    stats.lognorm(s=0.55, loc=0, scale=3),
+    stats.uniform(),
+    stats.triang(loc=0, scale=2, c=0.3),
+]
+
+fig, axes = plt.subplots(2, 2, figsize=(5, 3))
+
+for ax, rv, name in zip(axes.ravel(), distributions, names):
+    ax.set_title(name)
+    if name == "Uniform":
+        x = np.linspace(0 - 1e-4, 1 + 1e-4, 2**10)
+    else:
+        x = np.linspace(rv.ppf(0.001), rv.ppf(0.999), 2**10)
+    ax.plot(x, rv.pdf(x), c=COLORS[0])
+    ax2 = ax.twinx()
+    ax2.plot(x, rv.cdf(x), c=COLORS[1])
+
+    # ax.set_ylabel('PDF', color=COLORS[0])
+    # ax2.set_ylabel('CDF', color=COLORS[1])
+    ax.set_xticks([])
+    ax.set_yticks([])
+    ax2.set_yticks([])
+
+fig.tight_layout()
+fig.savefig(os.path.join(SAVE_DIR, "pdfs_cdfs_v2.pdf"))
 
 # %% [markdown]
 # # Knut's figures
@@ -69,8 +248,16 @@ ax.set_ylabel("probability density")
 
 mode = x[np.argmax(rv.pdf(x))]
 plt.plot([mode, mode], [0, rv.pdf(mode)], label=f"Mode = {np.round(mode, 2)}")
-plt.plot([rv.ppf(0.5), rv.ppf(0.5)], [0, rv.pdf(rv.ppf(0.5))], label=f"Median = {rv.ppf(0.5)}")
-plt.plot([rv.mean(), rv.mean()], [0, rv.pdf(rv.mean())], label=f"Mean = {np.round(rv.mean(), 2)}")
+plt.plot(
+    [rv.ppf(0.5), rv.ppf(0.5)],
+    [0, rv.pdf(rv.ppf(0.5))],
+    label=f"Median = {rv.ppf(0.5)}",
+)
+plt.plot(
+    [rv.mean(), rv.mean()],
+    [0, rv.pdf(rv.mean())],
+    label=f"Mean = {np.round(rv.mean(), 2)}",
+)
 plt.legend()
 
 fig.tight_layout()
@@ -87,9 +274,22 @@ ax.set_ylim([0, 1])
 ax.set_xlabel("days")
 ax.set_ylabel("cumulative probability")
 
-for  p in [0.1, 0.5, 0.9]:
-    plt.arrow(0, p, rv.ppf(p), 0, length_includes_head=True, head_width=0.04, head_length=0.5, zorder=10)
-    plt.plot([rv.ppf(p), rv.ppf(p)], [0, rv.cdf(rv.ppf(p))], label=f"P{int(p*100)} = {np.round(rv.ppf(p), 2)}")
+for p in [0.1, 0.5, 0.9]:
+    plt.arrow(
+        0,
+        p,
+        rv.ppf(p),
+        0,
+        length_includes_head=True,
+        head_width=0.04,
+        head_length=0.5,
+        zorder=10,
+    )
+    plt.plot(
+        [rv.ppf(p), rv.ppf(p)],
+        [0, rv.cdf(rv.ppf(p))],
+        label=f"P{int(p*100)} = {np.round(rv.ppf(p), 2)}",
+    )
 
 plt.legend()
 
@@ -101,7 +301,7 @@ names = ["Normal", "Lognormal", "Triangular"]
 distributions = [
     stats.norm(2),
     stats.lognorm(s=0.55, loc=0, scale=3),
-    stats.triang(loc=0, scale=2, c=0.3)
+    stats.triang(loc=0, scale=2, c=0.3),
 ]
 
 fig, axes = plt.subplots(1, 3, figsize=(8, 1.5))
@@ -112,9 +312,9 @@ for ax, rv, name in zip(axes, distributions, names):
     ax.plot(x, rv.pdf(x), c=COLORS[0])
     ax2 = ax.twinx()
     ax2.plot(x, rv.cdf(x), c=COLORS[1])
-    
-    ax.set_ylabel('PDF', color=COLORS[0])
-    ax2.set_ylabel('CDF', color=COLORS[1])
+
+    ax.set_ylabel("PDF", color=COLORS[0])
+    ax2.set_ylabel("CDF", color=COLORS[1])
 
 fig.tight_layout()
 fig.savefig(os.path.join(SAVE_DIR, "pdfs_cdfs.pdf"))
@@ -133,12 +333,14 @@ for ax, name in zip(axs, names):
     ax.set_ylim([0, 1.3])
     ax.set_title(name)
 
-axs[0].fill_between([1, 2], 0, 1, color=COLORS[0], edgecolor='black')
-axs[1].fill_between([1, 2], 0, 1, color=COLORS[1], edgecolor='black' )
+axs[0].fill_between([1, 2], 0, 1, color=COLORS[0], edgecolor="black")
+axs[1].fill_between([1, 2], 0, 1, color=COLORS[1], edgecolor="black")
 
-codes = [Path.MOVETO] + [Path.LINETO]*2 + [Path.CLOSEPOLY]
+codes = [Path.MOVETO] + [Path.LINETO] * 2 + [Path.CLOSEPOLY]
 vertices = [(2, 0), (3, 1), (4, 0), (2, 0)]
-axs[2].add_patch(PathPatch(Path(vertices, codes), facecolor=COLORS[2], edgecolor='black'))
+axs[2].add_patch(
+    PathPatch(Path(vertices, codes), facecolor=COLORS[2], edgecolor="black")
+)
 
 fig.tight_layout()
 fig.subplots_adjust(wspace=0.2)
@@ -151,7 +353,7 @@ names = ["X", "Y", "Z"]
 distributions = [
     stats.uniform(loc=1),
     stats.uniform(loc=1),
-    stats.triang(loc=2, scale=2, c=0.5)
+    stats.triang(loc=2, scale=2, c=0.5),
 ]
 
 fig, axes = plt.subplots(1, 3, figsize=(8, 2), sharex=True, sharey=True)
@@ -159,14 +361,14 @@ fig, axes = plt.subplots(1, 3, figsize=(8, 2), sharex=True, sharey=True)
 for ax, rv, name, color in zip(axes, distributions, names, COLORS):
     ax.set_title(name)
     ax.set_ylim([0, 1.3])
-    x = np.linspace(rv.ppf(0)-0.01, rv.ppf(1)+0.01, 2**10)
-    ax.fill_between(x, np.zeros_like(x), rv.pdf(x), color=color, edgecolor='black' )
-    
+    x = np.linspace(rv.ppf(0) - 0.01, rv.ppf(1) + 0.01, 2**10)
+    ax.fill_between(x, np.zeros_like(x), rv.pdf(x), color=color, edgecolor="black")
+
 fig.tight_layout()
 
 # %%
 uniform = stats.uniform(loc=1)
-triangular = stats.triang(loc=2, scale=2, c=0.5) # Sum of two uniforms
+triangular = stats.triang(loc=2, scale=2, c=0.5)  # Sum of two uniforms
 
 print(uniform.ppf(0.1), triangular.ppf(0.1))
 print(uniform.mean(), triangular.mean())
@@ -179,15 +381,15 @@ names = ["X", "Y", "Z"]
 distributions = [
     stats.uniform(loc=1),
     stats.uniform(loc=1),
-    stats.triang(loc=2, scale=2, c=0.5)
+    stats.triang(loc=2, scale=2, c=0.5),
 ]
 samples = [
     stats.uniform(loc=1, scale=1).rvs(1000),
     stats.uniform(loc=1, scale=1).rvs(1000),
 ]
-samples.append(samples[0]+samples[1])
+samples.append(samples[0] + samples[1])
 
-N_DOTS=250
+N_DOTS = 250
 
 fig, axes = plt.subplots(1, 3, figsize=(8, 2), sharex=True, sharey=True)
 
@@ -195,16 +397,15 @@ for ax, rv, samples, name, color in zip(axes, distributions, samples, names, COL
     ax.hist(samples, bins="fd", color=color, density=True)
     ax.scatter(
         samples[0:N_DOTS],
-        stats.uniform().rvs(len(samples[0:N_DOTS]), random_state=1) * 0.3
-        + 0.02,
+        stats.uniform().rvs(len(samples[0:N_DOTS]), random_state=1) * 0.3 + 0.02,
         color="black",
         s=1,
     )
     ax.set_title(name)
     ax.set_ylim([0, 1.3])
-    x = np.linspace(rv.ppf(0)-0.01, rv.ppf(1)+0.01, 2**10)
+    x = np.linspace(rv.ppf(0) - 0.01, rv.ppf(1) + 0.01, 2**10)
     ax.plot(x, rv.pdf(x), c="black")
-    
+
     # Show percentiles
     display(
         pd.Series(samples, name="samples")
@@ -212,7 +413,7 @@ for ax, rv, samples, name, color in zip(axes, distributions, samples, names, COL
         .to_frame()
         .T
     )
-    
+
 fig.tight_layout()
 fig.savefig(os.path.join(SAVE_DIR, "add_uniform_samples.pdf"))
 
@@ -289,11 +490,14 @@ time_in_flight = 2 * velocity * np.sin(angle) / g
 
 time = np.linspace(0, time_in_flight, num=2**5)
 
+
 def x(t):
     return velocity * np.cos(angle) * t
 
+
 def y(t):
     return velocity * np.sin(angle) * t - g * t**2 / 2
+
 
 fig, ax = plt.subplots(1, 1, figsize=(5, 2))
 
@@ -301,8 +505,16 @@ ax.set_xlim([-0.15, 11.25])
 ax.set_ylim([-0.15, 4])
 
 ax.plot([x(t_i) for t_i in time], [y(t_i) for t_i in time])
-ax.arrow(0, 0, np.cos(angle) * velocity/5, np.sin(angle) * velocity / 5,
-        head_width=0.3, head_length=0.3, overhang=0.8, zorder=99)
+ax.arrow(
+    0,
+    0,
+    np.cos(angle) * velocity / 5,
+    np.sin(angle) * velocity / 5,
+    head_width=0.3,
+    head_length=0.3,
+    overhang=0.8,
+    zorder=99,
+)
 
 fig.tight_layout()
 fig.savefig(os.path.join(SAVE_DIR, "cannonball.pdf"))
@@ -312,6 +524,7 @@ fig.savefig(os.path.join(SAVE_DIR, "cannonball.pdf"))
 def final_x(angle, velocity):
     time_in_flight = 2 * velocity * np.sin(angle) / g
     return x(time_in_flight)
+
 
 fig, ax = plt.subplots(1, 1, figsize=(5, 2))
 
@@ -326,15 +539,26 @@ random.seed(1)
 for iteration in range(99):
     angle = np.deg2rad(random.gauss(45, RELATIVE_ERROR_ANGLE * 45))
     velocity = random.gauss(10, 0.01 * 10)
-    
-    ax.arrow(0, 0, np.cos(angle) * velocity/5, np.sin(angle) * velocity / 5,
-        head_width=0.3, head_length=0.3, overhang=0.8, zorder=99, alpha=0.1)
-    
+
+    ax.arrow(
+        0,
+        0,
+        np.cos(angle) * velocity / 5,
+        np.sin(angle) * velocity / 5,
+        head_width=0.3,
+        head_length=0.3,
+        overhang=0.8,
+        zorder=99,
+        alpha=0.1,
+    )
+
     time_in_flight = 2 * velocity * np.sin(angle) / g
     time = np.linspace(0, time_in_flight, num=2**5)
-    ax.plot([x(t_i) for t_i in time], [y(t_i) for t_i in time], color=COLORS[0], alpha=0.1)
-    
-    
+    ax.plot(
+        [x(t_i) for t_i in time], [y(t_i) for t_i in time], color=COLORS[0], alpha=0.1
+    )
+
+
 # Plot histogram of final values
 final_x_values = []
 
@@ -342,12 +566,14 @@ for iteration in range(99999):
     angle = np.deg2rad(random.gauss(45, RELATIVE_ERROR_ANGLE * 45))
     velocity = random.gauss(10, 0.01 * 10)
     final_x_values.append(final_x(angle, velocity))
-    
+
 
 (counts, bins) = np.histogram(final_x_values, bins=100)
 
-factor = 0.00048 # Factor to scale the histogram for a nice figure
-ax.hist(bins[:-1], bins=bins, weights=factor*counts, color=COLORS[1], zorder=99, alpha=0.8)
+factor = 0.00048  # Factor to scale the histogram for a nice figure
+ax.hist(
+    bins[:-1], bins=bins, weights=factor * counts, color=COLORS[1], zorder=99, alpha=0.8
+)
 
 fig.tight_layout()
 fig.savefig(os.path.join(SAVE_DIR, "cannonball_sim1.pdf"))
@@ -489,8 +715,8 @@ money_per_day = pd.Series(
 # %%
 fig, ax = plt.subplots(1, 1, figsize=(3, 9 / 4))
 
-ax.plot(money_per_day, '-o', zorder=9)
-#ax.set_xticks(np.arange(len(money_per_day)))
+ax.plot(money_per_day, "-o", zorder=9)
+# ax.set_xticks(np.arange(len(money_per_day)))
 ax.grid(True, ls="--", alpha=0.5, zorder=0)
 ax.set_ylabel("NOK")
 
@@ -524,12 +750,11 @@ np.mean(resamples.sum(axis=1))
 fig, axes = plt.subplots(2, 3, figsize=(8, 3.5))
 
 for i, (ax, rs) in enumerate(zip(axes.ravel(), resamples[:6, :]), 1):
-    
     ax.set_title(f"{round(rs.sum())} NOK")
-    ax.plot(rs, '-o', zorder=9)
+    ax.plot(rs, "-o", zorder=9)
     ax.grid(True, ls="--", alpha=0.5, zorder=0)
     ax.set_xticklabels([])
-    
+
 fig.tight_layout()
 
 fig.savefig(os.path.join(SAVE_DIR, "groceries_data_resamples.pdf"))
@@ -552,6 +777,204 @@ fig.tight_layout()
 fig.savefig(os.path.join(SAVE_DIR, "groceries_data_resampled.pdf"))
 
 # %% [markdown]
+# ## Mutual fund with resampling
+
+# %%
+stock_returns = np.array(
+    [
+        1.094595,
+        1.05144,
+        0.911937,
+        0.974249,
+        0.982379,
+        0.795964,
+        0.915493,
+        1.101538,
+        1.427374,
+        1.21135,
+        0.956381,
+        0.981419,
+        0.891566,
+        0.818533,
+        1.226415,
+        1.073077,
+        0.951613,
+        0.986817,
+        1.026718,
+        0.899628,
+        1.13843,
+        1.018149,
+        0.770053,
+        0.983796,
+        1.004706,
+        0.98829,
+        1.156398,
+        1.245902,
+        1.003289,
+        1.159016,
+        1.148515,
+        1.041872,
+        0.789598,
+        1.261976,
+        1.170819,
+        0.968592,
+        0.716527,
+        1.322628,
+        1.112583,
+        0.919643,
+        0.983819,
+        1.019737,
+        0.9,
+        0.893668,
+        1.247326,
+        1.025723,
+        0.753396,
+        1.088766,
+        1.124841,
+        0.80521,
+        1.026723,
+        1.219178,
+        0.992135,
+        1.198188,
+        1.195652,
+        1.059289,
+        1.308209,
+        1.41814,
+        0.87329,
+        0.736066,
+        0.519399,
+        0.854217,
+        1.486601,
+        0.878558,
+        1.485961,
+        1.278343,
+        0.642979,
+        1.105217,
+        0.984,
+        0.857724,
+        0.846445,
+        1.129899,
+        1.17443,
+        1.138397,
+        1.335804,
+        0.844062,
+        0.975016,
+        1.035738,
+        1.098958,
+        1.256517,
+        1.1405,
+        1.082265,
+        0.972498,
+        1.398272,
+        1.240169,
+        1.028992,
+        0.905129,
+        1.352626,
+        1.04333,
+        1.029123,
+        1.156564,
+        0.941943,
+        1.175069,
+        1.126488,
+        1.083604,
+        0.904951,
+        1.1254,
+        1.073232,
+        0.885392,
+        1.035212,
+        1.104931,
+        1.146176,
+        0.81174,
+        0.754968,
+        1.334895,
+        1.07165,
+        0.869461,
+        1.10482,
+        1.112225,
+        1.199279,
+        0.881955,
+        1.230179,
+        1.153153,
+        1.03125,
+        1.213287,
+        1.270413,
+        0.94707,
+        1.139321,
+        1.191205,
+        0.957408,
+        1.278319,
+        1.046025,
+        1.086759,
+        0.983636,
+        1.320623,
+        1.247062,
+        1.257289,
+        1.296265,
+        1.141595,
+        0.936896,
+        0.853687,
+        0.78568,
+        1.264199,
+        1.043169,
+        1.082376,
+        1.11373,
+        0.968122,
+        0.627796,
+        1.298066,
+        1.141548,
+        1.014003,
+        1.138261,
+        1.230992,
+        1.112941,
+        0.945971,
+        1.185823,
+        1.226221,
+        0.887863,
+        1.30994,
+    ]
+)
+
+# %%
+fig, ax = plt.subplots(figsize=(5, 2.75))
+x = np.arange(len(stock_returns)) + 0
+# ax.semilogy(x, np.cumprod(stock_returns), zorder=5)
+ax.plot(x, stock_returns, zorder=5)
+ax.grid(True, ls="--", alpha=0.5, zorder=0)
+ax.set_xlabel("Years")
+ax.set_ylabel("Relative return")
+fig.tight_layout()
+fig.savefig(os.path.join(SAVE_DIR, "stock_returns.pdf"))
+
+for iteration in range(3):
+    i = int(rng.uniform() * (len(stock_returns) - 20))
+
+    ax.fill_betweenx([1 / 2, 1.6], i, i + 20, color="black", alpha=0.3)
+    fig.tight_layout()
+    # fig.savefig(os.path.join(SAVE_DIR, f"stock_returns_{iteration}.pdf"))
+
+plt.show()
+
+# %%
+fig, axes = plt.subplots(3, 3, figsize=(8, 4), sharex=True, sharey=True)
+
+for i, (ax) in enumerate(axes.ravel(), 1):
+    i = rng.uniform() * (len(stock_returns) - 20)
+    i = int(i)
+    sampled = stock_returns[i : i + 20]
+    # sampled = rng.choice(stock_returns, size=20, replace=True)
+    sampled = np.cumprod(sampled)
+
+    ax.set_title(f"{round(rs.sum())} NOK")
+    ax.plot(sampled, "-", zorder=9)
+    ax.grid(True, ls="--", alpha=0.5, zorder=0)
+    ax.set_xticklabels([])
+
+fig.tight_layout()
+
+# fig.savefig(os.path.join(SAVE_DIR, "groceries_data_resamples.pdf"))
+plt.show()
+
+# %% [markdown]
 # # Wind farms
 
 # %%
@@ -559,8 +982,18 @@ from shapely.geometry import Point
 from shapely.geometry.polygon import Polygon
 from scipy.spatial.distance import cdist
 
-border_coords = [(0, 0), (0.05, 0.8), (0.2, 0.9), (0.2, 0.6), (0.4, 0.6),
-                 (0.4, 0.9),(0.6, 1.0), (0.9, 1.0), (1.0, 0.2), (1, 0)]
+border_coords = [
+    (0, 0),
+    (0.05, 0.8),
+    (0.2, 0.9),
+    (0.2, 0.6),
+    (0.4, 0.6),
+    (0.4, 0.9),
+    (0.6, 1.0),
+    (0.9, 1.0),
+    (1.0, 0.2),
+    (1, 0),
+]
 border_coords = [(x, y) for (x, y) in border_coords]
 borders = Polygon(border_coords)
 
@@ -568,15 +1001,15 @@ borders = Polygon(border_coords)
 # %%
 def objective(points):
     """Objective function to minimize."""
-    
+
     # We want to maximize the minimum distance, rougly speaking.
     # However, we smooth the objective a little bit, compared to
     # actually implementing maximize min(distance)
-    
+
     distances = cdist(np.array(points), np.array(points))
-    
+
     # For each point, get closest neighbor, then average squared length to closest neighbor
-    min_distances = np.min(distances + np.eye(len(points))*9, axis=0)
+    min_distances = np.min(distances + np.eye(len(points)) * 9, axis=0)
     distance_score = np.mean(np.exp(-min_distances))
 
     # Add linear penalty for being outside
@@ -624,15 +1057,15 @@ def draw_solution(ax, points):
     coord = border_coords
     coord.append(coord[0])
 
-    xs, ys = zip(*coord) 
-    
+    xs, ys = zip(*coord)
+
     ax.plot(xs, ys)
     ax.scatter(*points.T, color="black", s=50, alpha=0.66)
-    
-    
+
+
 np.random.seed(3)
 points = np.random.uniform(size=(25, 2))
-    
+
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(5, 2.5))
 ax1.set_aspect("equal")
 ax2.set_aspect("equal")
@@ -657,11 +1090,12 @@ fig.savefig(os.path.join(SAVE_DIR, "windfarm_random_solution.pdf"))
 # %%
 def permute_solution(points, iteration=None):
     scale = 0.05
-    
+
     points = points.copy()
     idx = np.random.choice(np.arange(points.shape[0]))
     points[idx, :] += np.random.normal(loc=0, scale=scale, size=(2))
     return points
+
 
 def climb(points):
     """Stochastic hill climbing."""
@@ -672,13 +1106,14 @@ def climb(points):
         suggestion = permute_solution(points)
         if objective(suggestion) < objective(points):
             points = suggestion
-            
+
     return points
-        
+
+
 np.random.seed(3)
 points = np.random.uniform(size=(25, 2))
 points = climb(points)
-    
+
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(5, 2.5))
 ax1.set_aspect("equal")
 ax2.set_aspect("equal")
@@ -704,7 +1139,7 @@ fig.savefig(os.path.join(SAVE_DIR, "windfarm_hc.pdf"))
 # %%
 def anneal(points):
     """Simulated annealing."""
-    
+
     ITERATIONS = 10**4
 
     for iteration in range(ITERATIONS):
@@ -713,13 +1148,14 @@ def anneal(points):
         accept_worse = np.random.rand() < np.exp(-0.001 * iteration)
         if objective(suggestion) < objective(points) or accept_worse:
             points = suggestion
-            
+
     return points
-  
+
+
 np.random.seed(3)
 points = np.random.uniform(size=(25, 2))
 points = anneal(points)
-    
+
 fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(5, 2.5))
 ax1.set_aspect("equal")
 ax2.set_aspect("equal")
@@ -878,7 +1314,7 @@ ax.set_ylabel("Pulse")
 fig.tight_layout()
 fig.savefig(os.path.join(SAVE_DIR, "height_pulse_base.pdf"))
 
-print(regression_result.rvalue) # The Pearson correlation coefficient.
+print(regression_result.rvalue)  # The Pearson correlation coefficient.
 
 # %%
 from sklearn.utils import resample
@@ -889,13 +1325,12 @@ axes = axes.ravel()
 x_smooth = np.linspace(np.min(paitent_height), np.max(paitent_height))
 
 for i, ax in enumerate(axes):
-    
     # Resample dataset and draw it
-    x_r, y_r = resample(paitent_height, patient_pulse, n_samples=len(paitent_height),
-                       random_state=i)
+    x_r, y_r = resample(
+        paitent_height, patient_pulse, n_samples=len(paitent_height), random_state=i
+    )
     ax.scatter(x_r, y_r, alpha=0.8, zorder=10, s=15)
-    
-    
+
     # Regression line
     regression_result = stats.linregress(x_r, y_r)
     ax.plot(
@@ -905,12 +1340,12 @@ for i, ax in enumerate(axes):
         zorder=25,
     )
 
-    #ax.scatter(paitent_height, patient_pulse, alpha=0.8, zorder=10)
+    # ax.scatter(paitent_height, patient_pulse, alpha=0.8, zorder=10)
     ax.grid(True, ls="--", alpha=0.5, zorder=0)
-    #ax.set_xlabel("Height")
-    #ax.set_ylabel("Pulse")
+    # ax.set_xlabel("Height")
+    # ax.set_ylabel("Pulse")
     ax.set_title(f"Correlation: {round(regression_result.rvalue, 4)}")
-    
+
 fig.tight_layout()
 fig.savefig(os.path.join(SAVE_DIR, "height_pulse_resamples.pdf"))
 
@@ -921,28 +1356,44 @@ regression_result = stats.linregress(paitent_height, patient_pulse)
 fig, ax = plt.subplots(figsize=(5.5, 3))
 
 
-ax.axvline(x=regression_result.rvalue, label="Observed correlation", zorder=15, color="black", ls="--")
-
+ax.axvline(
+    x=regression_result.rvalue,
+    label="Observed correlation",
+    zorder=15,
+    color="black",
+    ls="--",
+)
 
 
 # Compute histogram
 resampled_correlations = []
 for iteration in range(9999):
     # Resample dataset
-    x_r, y_r = resample(paitent_height, patient_pulse, n_samples=len(paitent_height),
-                       random_state=iteration)
+    x_r, y_r = resample(
+        paitent_height,
+        patient_pulse,
+        n_samples=len(paitent_height),
+        random_state=iteration,
+    )
     # Compute correlation
     regression_result = stats.linregress(x_r, y_r)
     resampled_correlations.append(regression_result.rvalue)
 
-    
+
 resampled_correlations = np.array(resampled_correlations)
-ax.hist(resampled_correlations, bins="fd", label="Resampled correlations", zorder=10,
-       density=True)
-    
+ax.hist(
+    resampled_correlations,
+    bins="fd",
+    label="Resampled correlations",
+    zorder=10,
+    density=True,
+)
+
 ax.grid(True, ls="--", alpha=0.5, zorder=0)
 ax.legend()
-ax.set_title(f"Proportion of resampled coefficients over 0 was {round((resampled_correlations > 0).mean(), 4)}")
+ax.set_title(
+    f"Proportion of resampled coefficients over 0 was {round((resampled_correlations > 0).mean(), 4)}"
+)
 ax.set_xlabel("Correlation coefficients")
 fig.tight_layout()
 fig.savefig(os.path.join(SAVE_DIR, "height_pulse_coefs_binned.pdf"))
