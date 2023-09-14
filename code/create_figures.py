@@ -6,9 +6,9 @@
 #       extension: .py
 #       format_name: percent
 #       format_version: '1.3'
-#       jupytext_version: 1.14.5
+#       jupytext_version: 1.14.6
 #   kernelspec:
-#     display_name: Python 3
+#     display_name: Python 3 (ipykernel)
 #     language: python
 #     name: python3
 # ---
@@ -120,8 +120,11 @@ ax.scatter(
     label="Observed heights",
     alpha=0.8,
 )
+mu = np.mean(patient_height)
+std = np.std(patient_height, ddof=1)
 
 ax.set_ylim([0, 0.055])
+ax.set_xlim([mu - 3 * std, mu + 3 * std])
 
 ax.legend()
 ax.set_xlabel("Height in centimeters")
@@ -134,8 +137,6 @@ ax.legend()
 fig.tight_layout()
 fig.savefig(os.path.join(SAVE_DIR, "heights_2.pdf"))
 
-mu = np.mean(patient_height)
-std = np.std(patient_height, ddof=1)
 print("mean", round(mu, 1))
 print("std", round(std, 1))
 normal = stats.norm(loc=mu, scale=std)
@@ -150,6 +151,10 @@ fig.savefig(os.path.join(SAVE_DIR, "heights_3.pdf"))
 fig, ax = plt.subplots(1, 1, figsize=(6, 3))
 
 ax.set_title(f"Heights of {len(patient_height)} people")
+mu = np.mean(patient_height)
+std = np.std(patient_height, ddof=1)
+
+ax.set_xlim([mu - 3 * std, mu + 3 * std])
 
 ax.scatter(
     patient_height,
