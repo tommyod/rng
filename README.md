@@ -3,7 +3,7 @@ Wanna see my collection of random numbers?
 
 Code and slides for a talk given at the Equinor Developer Conference (EDC) in 2023.
 
-- [Presentation slides (PDF)](https://github.com/tommyod/rng/)
+- [Presentation slides (PDF)](https://tommyodland.com/files/presentations/rng.pdf)
 - [Video recording (YouTube)](https://github.com/tommyod/rng/)
 - [Blogpost](https://github.com/tommyod/rng/)
 
