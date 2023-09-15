@@ -4,7 +4,7 @@ Wanna see my collection of random numbers?
 Code and slides for a talk given at the Equinor Developer Conference (EDC) in 2023.
 
 - [Presentation slides (PDF)](https://tommyodland.com/files/presentations/rng.pdf)
-- [Video recording (YouTube)](https://github.com/tommyod/rng/)
+- [Video recording (YouTube)](https://m.youtube.com/watch?v=tg0gf40fqlI)
 - [Blogpost](https://github.com/tommyod/rng/)
 
 ## Running the Python code
