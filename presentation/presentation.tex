@@ -164,6 +164,7 @@
 	\end{center}
 \end{frame}
 
+
 \begin{frame}[fragile]{Agenda}
 	
 	\begin{easylist}[itemize]
@@ -185,15 +186,6 @@
 \section{Statistical Concepts}
 
 \begin{frame}[fragile]{Probability}
-	
-	\begin{easylist}[itemize]
-		# What is the probability of a dry expolation well?
-		# On our planned windfarm, what is the chance of exceeding the budget?
-		# For Oseberg South Oil Field, what is the chance of production efficiency less than 1?
-	\end{easylist}
-\end{frame}
-
-\begin{frame}[fragile]{Probability}
 
 	A probability $P$ is a function defined on events in a sample space $S$, that satisfies:
 	\begin{align*}
@@ -204,79 +196,88 @@
 	
 \end{frame}
 
+
+\begin{frame}[fragile]{Human height - distributions}
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/heights_1}
+     \end{figure}
+     \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Human height - distributions}
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/heights_2}
+     \end{figure}
+     \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Human height - distributions}
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/heights_3}
+     \end{figure}
+     Mean value: $168.7$ \hspace*{4em} Standard deviation: $9.3$
+     \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Human height - cumulative distributions}
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/heights_cumulative_2}
+     \end{figure}
+     Empirical percentiles:\\$P10 = 157.9$,\hspace*{1em} $P50 = 169$,\hspace*{1em} $P90 = 182$
+     \end{center}
+\end{frame}
+
+\begin{frame}[fragile]{Human height - cumulative distributions}
+    \begin{center}
+     \begin{figure}
+     	\centering
+     	\includegraphics[width=0.99\linewidth]{figures/heights_cumulative_3}
+     \end{figure}
+     Normal percentiles:\\$P10 = 156.8$,\hspace*{1em} $P50 = 168.7$,\hspace*{1em} $P90 = 180.6$
+     \end{center}
+\end{frame}
+
 \begin{frame}[fragile]{Random Variables and Probability Distributions}
-
-	\begin{easylist}[itemize]
-		# A random variable ($X$) is a function from a sample space to a measurable space 
-		## discrete
-		## continuous
-		# A probability distribution is a mathematical function that gives the probability of occurrence of outcomes
-	\end{easylist}
-
 	\begin{figure}
 		\centering
-		\includegraphics[width=0.99\linewidth]{figures/pdfs_cdfs}
+		\includegraphics[width=0.99\linewidth]{figures/pdfs_cdfs_v2}
 	\end{figure}
 \end{frame}
 
-\begin{frame}[fragile]{Probability Density Functions (PDFs)}
+\begin{frame}[fragile]{Cumulative distribution function (CDF) and Percentiles}
 	\begin{columns}
-	\begin{column}{0.5\textwidth}
-		\begin{center}
-		 \begin{figure}
-			 \centering
-			 \includegraphics[width=0.99\linewidth]{figures/uniform}
-		 \end{figure}
-		 \begin{minted}{pycon}
->>> import random
->>> random.random()
-0.9757805031464292
-		 \end{minted}
-		 \end{center}
-	\end{column}
-	\begin{column}{0.5\textwidth}  %%<--- here
-		\begin{center}
-		 \begin{figure}
-			 \centering
-			 \includegraphics[width=0.99\linewidth]{figures/normal}
-		 \end{figure}
-		  \begin{minted}{pycon}
->>> import random
->>> random.gauss(0, 1)
--0.19223758016631237
-		  \end{minted}
-		 \end{center}
-	\end{column}
+		\begin{column}{0.5\textwidth}
+			\begin{easylist}[itemize]
+				# CDF:
+				\begin{equation*}
+					F(x) = \text{Probability of $X \leq x$}
+				\end{equation*}
+			
+				# Percentiles:
+				##  $Pxx$ is the value such that the probability is $xx$ \% to obtain values $Pxx$ or less
+	
+				# Note! The opposite definition is also frequently used!
+			\end{easylist}
+		\end{column}
+	
+		\begin{column}{0.5\textwidth}
+			\begin{figure}
+				\centering
+				\includegraphics[width=0.99\linewidth]{figures/lognorm_cdf}
+			\end{figure}
+		\end{column}
 	\end{columns}
 	\end{frame}
 
-\begin{frame}[fragile]{Cumulative distribution function (CDF) and Percentiles}
-\begin{columns}
-	\begin{column}{0.5\textwidth}
-		\begin{easylist}[itemize]
-			# CDF:
-			\begin{equation*}
-				F(x) = \text{Probability of $X \leq x$}
-			\end{equation*}
-		
-			# Percentiles:
-			##  $Pxx$ is the value such that the probability is $xx$ \% to obtain values $Pxx$ or less
-
-			# Note! The opposite definition is also frequently used!
-		\end{easylist}
-	\end{column}
-
-	\begin{column}{0.5\textwidth}
-		\begin{figure}
-			\centering
-			\includegraphics[width=0.99\linewidth]{figures/lognorm_cdf}
-		\end{figure}
-	\end{column}
-\end{columns}
-\end{frame}
-
-
-\begin{frame}[fragile]{Expected Value, P50 or Most Likely Value}
+\begin{frame}[fragile]{Mean, median and mode}
 	\begin{columns}
 		\begin{column}{0.5\textwidth}
 			\begin{easylist}[itemize]
@@ -303,7 +304,7 @@
 	\end{frame}
 	
 
-\begin{frame}[fragile]{Calculation with random variables}
+\begin{frame}[fragile]{Calculations with distributions}
 	What is the distribution of total time ($Z$) for two independent tasks ($X + Y$), when the distribution for each task is known?
     \begin{center}
      \begin{figure}
@@ -318,7 +319,7 @@
 	\end{flalign*}
 \end{frame}
 
-\begin{frame}[fragile]{Calculation with random variables}
+\begin{frame}[fragile]{Calculations with distributions}
 	What is the distribution of total time ($Z$) for two independent tasks ($X + Y$), when the distribution for each task is known?
     \begin{center}
      \begin{figure}
@@ -333,7 +334,7 @@
 	\end{flalign*}
 \end{frame}
 
-\begin{frame}[fragile]{Computational Rules}
+\begin{frame}[fragile]{Computational rules}
 	Mean (expected value):
 	\begin{flalign*}
 		& E(a + bX) = a + bE(X) \\
@@ -387,6 +388,37 @@
 % ==================================================================
 % ==================================================================
 \section{Monte Carlo Simulation}
+
+\begin{frame}[fragile]{Probability Density Functions (PDFs)}
+	\begin{columns}
+	\begin{column}{0.5\textwidth}
+		\begin{center}
+		 \begin{figure}
+			 \centering
+			 \includegraphics[width=0.99\linewidth]{figures/uniform}
+		 \end{figure}
+		 \begin{minted}{pycon}
+>>> import random
+>>> random.random()
+0.9757805031464292
+		 \end{minted}
+		 \end{center}
+	\end{column}
+	\begin{column}{0.5\textwidth}  %%<--- here
+		\begin{center}
+		 \begin{figure}
+			 \centering
+			 \includegraphics[width=0.99\linewidth]{figures/normal}
+		 \end{figure}
+		  \begin{minted}{pycon}
+>>> import random
+>>> random.gauss(0, 1)
+-0.19223758016631237
+		  \end{minted}
+		 \end{center}
+	\end{column}
+	\end{columns}
+	\end{frame}
 
 
 \begin{frame}[fragile]{Sampling PDFs}
@@ -766,6 +798,36 @@ plt.hist(resamples.sum(axis=1), bins="auto",
 \end{minted}
 \end{center}
 \end{frame}
+
+\begin{frame}[fragile]{Mutual fund}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/stock_returns}
+ \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{Mutual fund}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/stock_returns_0}
+ \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{Mutual fund}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/stock_returns_1}
+ \end{figure}
+\end{frame}
+
+\begin{frame}[fragile]{Mutual fund}
+ \begin{figure}
+    	\centering
+    	\includegraphics[width=0.99\linewidth]{figures/stock_returns_2}
+ \end{figure}
+\end{frame}
+
+
 
 \begin{frame}[fragile]{Resampling}
 	
