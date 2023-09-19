@@ -5,7 +5,7 @@ Code and slides for a talk given at the Equinor Developer Conference (EDC) in 20
 
 - [Presentation slides (PDF)](https://tommyodland.com/files/presentations/rng.pdf)
 - [Video recording (YouTube)](https://m.youtube.com/watch?v=tg0gf40fqlI)
-- [Blogpost](https://github.com/tommyod/rng/)
+- [Blogpost](https://tommyodland.com/articles/2023/wanna-see-my-collection-of-random-numbers/)
 
 ## Running the Python code
 
